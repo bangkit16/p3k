@@ -1,5 +1,12 @@
 @if (session($key ?? 'status'))
-    <div class="alert alert-success" role="alert">
-        {{ session($key ?? 'status') }}
-    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: 'success', // Ikon untuk alert, bisa diubah jadi 'error', 'warning', dll.
+                title: 'Berhasil',
+                text: '{{ session($key ?? 'status') }}',
+                confirmButtonText: 'OK'
+            });
+        });
+    </script>
 @endif
