@@ -52,7 +52,7 @@ class KotakController extends Controller
             'barang_id' => ['required', 'array', 'min:1'], // Barang harus array minimal 1
             'barang_id.*' => ['required', 'distinct'],    // Setiap elemen harus unik dan tidak boleh kosong
             'jumlah' => ['required', 'array', 'min:1'],   // Jumlah harus array minimal 1
-            'jumlah.*' => ['required', 'integer', 'min:1'], // Setiap jumlah harus angka positif minimal 1
+            'jumlah.*' => ['required', 'min:1'], // Setiap jumlah harus angka positif minimal 1
         ], [
             'lokasi.required' => 'Lokasi harus diisi.',
             'barang_id.required' => 'Barang harus diisi.',

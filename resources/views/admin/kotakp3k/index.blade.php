@@ -167,10 +167,11 @@
                                             <label for="barang_id_{{ $index }}" class="col-form-label">Jenis
                                                 Barang</label>
                                             <select name="barang_id[]" id="barang_id_{{ $index }}"
-                                                class="form-select @error("barang_id.$index") is-invalid @enderror">
+                                                class="form-select @error("barang_id.$index") is-invalid @enderror"
+                                                onchange="toggleJumlahDropdown({{ $index }})">
                                                 <option value="">--Pilih--</option>
                                                 @foreach ($barang as $b)
-                                                    <option value="{{ $b->barang_id }}"
+                                                    <option value="{{ $b->barang_id }}" data-tipe="{{ $b->tipe }}"
                                                         {{ $barangId == $b->barang_id ? 'selected' : '' }}>
                                                         {{ $b->barang_nama }}
                                                     </option>
@@ -182,22 +183,43 @@
                                                 </span>
                                             @enderror
                                         </div>
-                                        
-                                        @if ($b->tipe == 'number')
-                                            
-                                        <!-- Input Jumlah -->
-                                        <div class="col-md-4">
-                                            <label for="jumlah_{{ $index }}" class="col-form-label">Jumlah</label>
-                                            <input type="number" name="jumlah[]" id="jumlah_{{ $index }}"
-                                            class="form-control @error("jumlah.$index") is-invalid @enderror"
-                                            value="{{ old('jumlah')[$index] ?? '' }}" placeholder="Masukkan jumlah">
+
+                                        <!-- Dynamic Input Jumlah -->
+                                        <div class="col-md-4" id="jumlah_container_{{ $index }}">
+                                            @php
+                                                $tipe = $barang->firstWhere('barang_id', $barangId)?->tipe ?? 'number';
+                                            @endphp
+
+                                            @if ($tipe === 'select')
+                                                <label for="jumlah_{{ $index }}"
+                                                    class="col-form-label">Jumlah</label>
+                                                <select name="jumlah[]" id="jumlah_{{ $index }}"
+                                                    class="form-select @error("jumlah.$index") is-invalid @enderror">
+                                                    <option value="">--Pilih--</option>
+                                                    <option value="sedikit"
+                                                        {{ old("jumlah.$index") == 'sedikit' ? 'selected' : '' }}>Sedikit
+                                                    </option>
+                                                    <option value="hampir habis"
+                                                        {{ old("jumlah.$index") == 'hampir habis' ? 'selected' : '' }}>
+                                                        Hampir Habis</option>
+                                                    <option value="habis"
+                                                        {{ old("jumlah.$index") == 'habis' ? 'selected' : '' }}>Habis
+                                                    </option>
+                                                </select>
+                                            @else
+                                                <label for="jumlah_{{ $index }}"
+                                                    class="col-form-label">Jumlah</label>
+                                                <input type="number" name="jumlah[]" id="jumlah_{{ $index }}"
+                                                    class="form-control @error("jumlah.$index") is-invalid @enderror"
+                                                    value="{{ old("jumlah.$index") }}" placeholder="Masukkan jumlah">
+                                            @endif
+
                                             @error("jumlah.$index")
-                                            <span class="invalid-feedback" role="alert">
-                                                {{ $message }}
-                                            </span>
+                                                <span class="invalid-feedback" role="alert">
+                                                    {{ $message }}
+                                                </span>
                                             @enderror
                                         </div>
-                                        @endif
                                     </div>
                                 @endforeach
                             @else
@@ -206,16 +228,19 @@
                                     <!-- Dropdown Barang -->
                                     <div class="col-md-6">
                                         <label for="barang_id_0" class="col-form-label">Jenis Barang</label>
-                                        <select name="barang_id[]" id="barang_id_0" class="form-select">
+                                        <select name="barang_id[]" id="barang_id_0" class="form-select"
+                                            onchange="toggleJumlahDropdown(0)">
                                             <option value="">--Pilih--</option>
                                             @foreach ($barang as $b)
-                                                <option value="{{ $b->barang_id }}">{{ $b->barang_nama }}</option>
+                                                <option value="{{ $b->barang_id }}" data-tipe="{{ $b->tipe }}">
+                                                    {{ $b->barang_nama }}
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
 
-                                    <!-- Input Jumlah -->
-                                    <div class="col-md-4">
+                                    <!-- Dynamic Input Jumlah -->
+                                    <div class="col-md-4" id="jumlah_container_0">
                                         <label for="jumlah_0" class="col-form-label">Jumlah</label>
                                         <input type="number" name="jumlah[]" id="jumlah_0" class="form-control"
                                             placeholder="Masukkan jumlah">
@@ -223,6 +248,7 @@
                                 </div>
                             @endif
                         </div>
+
 
 
                         <div class="mb-2">
@@ -400,44 +426,70 @@
 <script>
     let barangCount = {{ old('barang_id') ? count(old('barang_id')) : 1 }};
 
+    function toggleJumlahDropdown(index) {
+        const barangSelect = document.getElementById(`barang_id_${index}`);
+        const jumlahContainer = document.getElementById(`jumlah_container_${index}`);
+        const selectedOption = barangSelect.options[barangSelect.selectedIndex];
+        const tipe = selectedOption.getAttribute("data-tipe");
+
+        // Clear jumlahContainer
+        jumlahContainer.innerHTML = '';
+
+        // Tambahkan inputan sesuai tipe
+        if (tipe === 'select') {
+            jumlahContainer.innerHTML = `
+            <label for="jumlah_${index}" class="col-form-label">Jumlah</label>
+            <select name="jumlah[]" id="jumlah_${index}" class="form-select">
+                <option value="">--Pilih--</option>
+                <option value="sedikit">Sedikit</option>
+                <option value="hampir habis">Hampir Habis</option>
+                <option value="habis">Habis</option>
+            </select>
+        `;
+        } else {
+            jumlahContainer.innerHTML = `
+            <label for="jumlah_${index}" class="col-form-label">Jumlah</label>
+            <input type="number" name="jumlah[]" id="jumlah_${index}" class="form-control"
+                placeholder="Masukkan jumlah">
+        `;
+        }
+    }
+
     function addBarang() {
         const container = document.getElementById('barang_container');
-        const newGroup = document.createElement('div');
-        newGroup.classList.add('form-group', 'row', 'mt-2', 'align-items-center');
-        newGroup.id = `barang_group_${barangCount}`;
-
-        newGroup.innerHTML = `
-        <!-- Dropdown Barang -->
+        const index = container.children.length;
+        const newBarang = document.createElement('div');
+        newBarang.className = 'form-group row mt-2 align-items-center';
+        newBarang.id = `barang_group_${index}`;
+        newBarang.innerHTML = `
         <div class="col-md-6">
-            <label for="barang_id_${barangCount}" class="col-form-label">Jenis Barang</label>
-            <select name="barang_id[]" id="barang_id_${barangCount}" class="form-select">
+            <label for="barang_id_${index}" class="col-form-label">Jenis Barang</label>
+            <select name="barang_id[]" id="barang_id_${index}" class="form-select" onchange="toggleJumlahDropdown(${index})">
                 <option value="">--Pilih--</option>
                 @foreach ($barang as $b)
-                    <option value="{{ $b->barang_id }}">{{ $b->barang_nama }}</option>
+                    <option value="{{ $b->barang_id }}" data-tipe="{{ $b->tipe }}">
+                        {{ $b->barang_nama }}
+                    </option>
                 @endforeach
             </select>
         </div>
-
-        <!-- Input Jumlah -->
-        <div class="col-md-4">
-            <label for="jumlah_${barangCount}" class="col-form-label">Jumlah</label>
-            <input type="number" name="jumlah[]" id="jumlah_${barangCount}" class="form-control" placeholder="Masukkan jumlah">
+        <div class="col-md-4" id="jumlah_container_${index}">
+            <label for="jumlah_${index}" class="col-form-label">Jumlah</label>
+            <input type="number" name="jumlah[]" id="jumlah_${index}" class="form-control" placeholder="Masukkan jumlah">
         </div>
     `;
-        container.appendChild(newGroup);
-        barangCount++;
+        container.appendChild(newBarang);
     }
 
     function removeBarang() {
         const container = document.getElementById('barang_container');
-        if (barangCount > 1) {
-            barangCount--;
-            const lastGroup = document.getElementById(`barang_group_${barangCount}`);
-            container.removeChild(lastGroup);
+        if (container.children.length > 1) {
+            container.removeChild(container.lastChild);
         } else {
-            alert("Minimal satu barang harus ada.");
+            alert('Minimal satu barang harus ada.');
         }
     }
+
 
 
     function validateBarang() {
