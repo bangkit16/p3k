@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('checklist', function (Blueprint $table) {
             $table->id('checklist_id');
             $table->date('tanggal');
-            $table->enum('status', ['belum_iseleksi', 'selesai' , 'revisi'])->default('belum_diseleksi');
+            $table->enum('status', ['Belum Approve', 'Approve Admin' , 'Approve Manager',  'Ditolak Admin' , 'Ditolak Manager'])->default('Belum Approve');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('kotak_p3k_id');
             // $table->foreignId('user_id')->references('id')->on('users');

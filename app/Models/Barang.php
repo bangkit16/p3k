@@ -11,7 +11,7 @@ class Barang extends Model
 
     protected $table = 'barang';
     protected $primaryKey = 'barang_id';
-    protected $fillable = ['barang_nama', 'jumlah_standar'];
+    protected $fillable = ['barang_nama', 'jumlah_standar' , 'tipe'];
 
     public function inputChecklists()
     {

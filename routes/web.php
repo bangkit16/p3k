@@ -12,38 +12,58 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
 Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
-
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
 Auth::routes();
 
 Route::get('/home', 'App\Http\Controllers\HomeController@index')->name('home')->middleware('auth');
 
 Route::group(['middleware' => 'auth'], function () {
-		Route::get('icons', ['as' => 'pages.icons', 'uses' => 'App\Http\Controllers\PageController@icons']);
-		Route::get('maps', ['as' => 'pages.maps', 'uses' => 'App\Http\Controllers\PageController@maps']);
-		Route::get('notifications', ['as' => 'pages.notifications', 'uses' => 'App\Http\Controllers\PageController@notifications']);
-		Route::get('rtl', ['as' => 'pages.rtl', 'uses' => 'App\Http\Controllers\PageController@rtl']);
-		Route::get('tables', ['as' => 'pages.tables', 'uses' => 'App\Http\Controllers\PageController@tables']);
-		Route::get('typography', ['as' => 'pages.typography', 'uses' => 'App\Http\Controllers\PageController@typography']);
-		Route::get('upgrade', ['as' => 'pages.upgrade', 'uses' => 'App\Http\Controllers\PageController@upgrade']);
+
+    // Rute untuk pengguna dengan role: 1 (Admin)
+    Route::group(['middleware' => ['role:1']], function () {
+        Route::resource('user', 'App\Http\Controllers\UserController', ['except' => ['show']]);
+        Route::resource('role', 'App\Http\Controllers\RoleController', ['except' => ['show']]);
+        Route::resource('kondisi', 'App\Http\Controllers\KondisiController', ['except' => ['show']]);
+        Route::resource('barang', 'App\Http\Controllers\BarangController', ['except' => ['show']]);
+        Route::resource('kotak', 'App\Http\Controllers\KotakController', ['except' => ['show']]);
+    });
+
+    // Rute untuk pengguna dengan role: 1 atau 2
+    Route::group(['middleware' => ['role:1,2']], function () {
+        Route::put('inspeksi/approve/{id}', ['as' => 'inspeksi.approve', 'uses' => 'App\Http\Controllers\InspeksiController@approve']);
+        Route::put('inspeksi/tolak/{id}', ['as' => 'inspeksi.tolak', 'uses' => 'App\Http\Controllers\InspeksiController@tolak']);
+        
+        // Laporan Pemakaian
+        Route::get('laporan-pemakaian-print', ['as' => 'laporan.pemakaian.print', 'uses' => 'App\Http\Controllers\PelaporanController@print']);
+        Route::get('laporan-pemakaian-pdf', ['as' => 'laporan.pemakaian.pdf', 'uses' => 'App\Http\Controllers\PelaporanController@downloadPDF']);
+        Route::get('laporan-pemakaian-excel', ['as' => 'laporan.pemakaian.excel', 'uses' => 'App\Http\Controllers\PelaporanController@downloadExcel']);
+        
+        // Laporan Checklist
+        Route::get('laporan-checklist-print/{id}', ['as' => 'laporan.checklist.print', 'uses' => 'App\Http\Controllers\LaporChecklistController@print']);
+        Route::get('laporan-checklist-pdf/{id}', ['as' => 'laporan.checklist.pdf', 'uses' => 'App\Http\Controllers\LaporChecklistController@downloadPDF']);
+        Route::get('laporan-checklist-excel/{id}', ['as' => 'laporan.checklist.excel', 'uses' => 'App\Http\Controllers\LaporChecklistController@downloadExcel']);
+    });
+
+    // Rute untuk pengguna dengan role: 1, 2, 3, atau 4
+    Route::group(['middleware' => ['role:1,2,3,4']], function () {
+        Route::resource('pemakaian', 'App\Http\Controllers\PemakaianController');
+    });
+
+    // Rute untuk pengguna dengan role: 1, 2, atau 3
+    Route::group(['middleware' => ['role:1,2,3']], function () {
+        Route::resource('inspeksi', 'App\Http\Controllers\InspeksiController');
+        
+        // Profil Pengguna
+        Route::get('profile', ['as' => 'profile.edit', 'uses' => 'App\Http\Controllers\ProfileController@edit']);
+        Route::put('profile', ['as' => 'profile.update', 'uses' => 'App\Http\Controllers\ProfileController@update']);
+        Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'App\Http\Controllers\ProfileController@password']);
+    });
+
 });
 
-Route::group(['middleware' => 'auth'], function () {
-	Route::resource('user', 'App\Http\Controllers\UserController', ['except' => ['show']]);
-	Route::resource('role', 'App\Http\Controllers\RoleController', ['except' => ['show']]);
-	Route::resource('kondisi', 'App\Http\Controllers\KondisiController', ['except' => ['show']]);
-	Route::resource('barang', 'App\Http\Controllers\BarangController', ['except' => ['show']]);
-	Route::resource('kotak', 'App\Http\Controllers\KotakController', ['except' => ['show']]);
-	Route::resource('inspeksi', 'App\Http\Controllers\InspeksiController');
-	Route::resource('pemakaian', 'App\Http\Controllers\PemakaianController');
-	Route::get('profile', ['as' => 'profile.edit', 'uses' => 'App\Http\Controllers\ProfileController@edit']);
-	Route::put('profile', ['as' => 'profile.update', 'uses' => 'App\Http\Controllers\ProfileController@update']);
-	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'App\Http\Controllers\ProfileController@password']);
-});
 

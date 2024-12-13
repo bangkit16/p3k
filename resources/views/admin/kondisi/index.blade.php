@@ -1,4 +1,4 @@
-@extends('admin.layouts.app', ['page' => 'Manage Barang', 'pageSlug' => 'manage_uraian'])
+@extends('admin.layouts.app', ['page' => 'Manage Kondisi', 'pageSlug' => 'manage_kondisi'])
 
 @section('content')
     <div class="row">

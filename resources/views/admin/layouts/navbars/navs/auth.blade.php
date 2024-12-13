@@ -48,7 +48,7 @@
                             <a href="#" class="nav-item dropdown-item">{{ 'Another one' }}</a>
                         </li>
                     </ul>
-                </li> --}}
+                </li> 
                 <li class="dropdown nav-item">
                     <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
                         <div class="photo">

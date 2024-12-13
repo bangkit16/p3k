@@ -21,7 +21,7 @@ return new class extends Migration
  
             $table->foreign('kotak_p3k_id')->references('kotak_p3k_id')->on('kotak_p3k');
             // $table->foreignId('barang_id')->constrained('barang')->onDelete('cascade');
-            $table->integer('jumlah');
+            $table->string('jumlah');
             $table->timestamps();   
         });
     }

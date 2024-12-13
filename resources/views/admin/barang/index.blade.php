@@ -1,4 +1,4 @@
-@extends('admin.layouts.app', ['page' => 'Manage Barang', 'pageSlug' => 'manage_uraian'])
+@extends('admin.layouts.app', ['page' => 'Manage Barang', 'pageSlug' => 'manage_barang'])
 
 @section('content')
     <div class="row">
@@ -57,6 +57,15 @@
                                     </th>
                                     <th scope="col">
                                         <span style="cursor: pointer;"
+                                            onclick="window.location.href='{{ request()->fullUrlWithQuery(['sort_by' => 'jumlah_standar', 'order' => $order === 'asc' ? 'desc' : 'asc']) }}'">
+                                            Tipe
+                                            @if ($sortBy === 'tipe')
+                                                {{ $order === 'asc' ? '🔼' : '🔽' }}
+                                            @endif
+                                        </span>
+                                    </th>
+                                    <th scope="col">
+                                        <span style="cursor: pointer;"
                                             onclick="window.location.href='{{ request()->fullUrlWithQuery(['sort_by' => 'created_at', 'order' => $order === 'asc' ? 'desc' : 'asc']) }}'">
                                             Tanggal Dibuat
                                             @if ($sortBy === 'created_at')
@@ -73,6 +82,7 @@
                                         <td>{{ $d->barang_nama }}</td>
                                         </td>
                                         <td>{{ $d->jumlah_standar }}</td>
+                                        <td>{{ $d->tipe }}</td>
                                         </td>
                                         <td>{{ $d->created_at }}</td>
                                         <td class="text-right">
@@ -83,10 +93,10 @@
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
                                                     <a class="dropdown-item edit-button" data-bs-toggle="modal"
-                                                        data-bs-target="#editbarang" 
-                                                        data-id="{{ $d->barang_id }}"
+                                                        data-bs-target="#editbarang" data-id="{{ $d->barang_id }}"
                                                         data-barang-nama="{{ $d->barang_nama }}"
                                                         data-jumlah-standar="{{ $d->jumlah_standar }}"
+                                                        data-tipe="{{ $d->tipe }}"
                                                         data-url="{{ url('barang/' . $d->barang_id) }}">Edit</a>
                                                     <a class="dropdown-item
                                                         delete-button"
@@ -137,7 +147,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form role="form" method="POST" action="{{ route('barang.store') }}" enctype="multipart/form-data">
+                    <form role="form" method="POST" action="{{ route('barang.store') }}"
+                        enctype="multipart/form-data">
                         @csrf
 
                         <!-- Name role -->
@@ -160,6 +171,22 @@
                             @if ($errors->has('jumlah_standar'))
                                 <span class="invalid-feedback" role="alert">
                                     {{ $errors->first('jumlah_standar') }}
+                                </span>
+                            @endif
+                        </div>
+                        <div class="form-group{{ $errors->has('tipe') ? ' has-danger' : '' }}">
+                            <label for="tipe" class="col-form-label">Tipe: </label>
+                            <select name="tipe" id="tipe"
+                                class="form-select{{ $errors->has('tipe') ? ' is-invalid' : '' }}" placeholder="tip">
+                                <option value="">-- Pilih --</option>
+                                <option @if (old('tipe') == 'number') selected @endif value="number">Number</option>
+                                <option @if (old('tipe') == 'select') selected @endif value="select">Select</option>
+                            </select>
+
+
+                            @if ($errors->has('tipe'))
+                                <span class="invalid-feedback" role="alert">
+                                    {{ $errors->first('tipe') }}
                                 </span>
                             @endif
                         </div>
@@ -200,7 +227,7 @@
                             @endif
                         </div>
                         <div class="form-group{{ $errors->has('edit_jumlah_standar') ? ' has-danger' : '' }}">
-                            <label for="edit-jumlah-standar" class="col-form-label">Name Uraian: </label>
+                            <label for="edit-jumlah-standar" class="col-form-label">Jumlah Standar: </label>
                             <input type="text" name="edit_jumlah_standar" id="edit-jumlah-standar"
                                 class="form-control{{ $errors->has('edit_jumlah_standar') ? ' is-invalid' : '' }}"
                                 placeholder="Jumlah Standar" value="{{ old('edit_jumlah_standar') }}">
@@ -210,7 +237,25 @@
                                 </span>
                             @endif
                         </div>
-                    </div>
+                        <div class="form-group{{ $errors->has('edit_tipe') ? ' has-danger' : '' }}">
+                            <label for="edit_tipe" class="col-form-label">Tipe: </label>
+                            <select name="edit_tipe" id="edit_tipe"
+                                class="form-select{{ $errors->has('edit_tipe') ? ' is-invalid' : '' }}"
+                                placeholder="tip">
+                                <option value="">-- Pilih --</option>
+                                <option @if (old('edit_tipe') == 'number') selected @endif value="number">Number</option>
+                                <option @if (old('edit_tipe') == 'select') selected @endif value="select">Select</option>
+
+                            </select>
+
+
+                            @if ($errors->has('edit_tipe'))
+                                <span class="invalid-feedback" role="alert">
+                                    {{ $errors->first('edit_tipe') }}
+                                </span>
+                            @endif
+                        </div>
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="text-white btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="text-white btn btn-primary">Update Barang</button>
@@ -255,15 +300,15 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         if (
-            {{ $errors->has('barang_nama') || $errors->has('jumlah_standar') ? 'true' : 'false' }}
+            {{ $errors->has('barang_nama') || $errors->has('jumlah_standar') || $errors->has('tipe') ? 'true' : 'false' }}
         ) {
             var addBarangModal = new bootstrap.Modal(document.getElementById('addbarang'));
             addBarangModal.show();
         }
-        
+
         // Check and show the editbarang modal if there are errors for edit role
         if (
-            {{ $errors->has('edit_barang_nama') || $errors->has('edit_jumlah_standar') ? 'true' : 'false' }}
+            {{ $errors->has('edit_barang_nama') || $errors->has('edit_jumlah_standar') || $errors->has('edit_tipe') ? 'true' : 'false' }}
             // {{ $errors->has('edit_barang_nama') ? 'true' : 'false' }}
         ) {
             var editBarangModal = new bootstrap.Modal(document.getElementById('editbarang'));
@@ -284,14 +329,18 @@
                 var barangId = this.getAttribute('data-id');
                 var barangNama = this.getAttribute('data-barang-nama');
                 var barangJumlahStandar = this.getAttribute('data-jumlah-standar');
+                var barangTipe = this.getAttribute('data-tipe');
                 var actionUrl = this.getAttribute('data-url');
                 localStorage.setItem('Url', actionUrl);
 
-                console.log(actionUrl , barangId, barangNama, barangJumlahStandar); 
+                console.log(actionUrl, barangId, barangNama, barangJumlahStandar);
 
                 $('#edit-id').val(barangId);
                 $('#edit-barang-nama').val(barangNama);
                 $('#edit-jumlah-standar').val(barangJumlahStandar);
+                // $('#edit-tipe').val(tipe);
+                const tipe = this.dataset.tipe; // Ambil nilai data-tipe
+                document.querySelector('#edit_tipe').value = tipe;
 
                 // Atur action form untuk update
                 $('#editbarangForm').attr('action', actionUrl);

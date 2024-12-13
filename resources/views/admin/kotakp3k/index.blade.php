@@ -1,4 +1,4 @@
-@extends('admin.layouts.app', ['page' => 'Riwayat Inspeksi', 'pageSlug' => 'riwayat'])
+@extends('admin.layouts.app', ['page' => 'Manage Kotak', 'pageSlug' => 'manage_kotak'])
 
 @section('content')
     <div class="row">
@@ -7,12 +7,12 @@
                 <div class="card-header">
                     <div class="row">
                         <div class="col-8">
-                            <h4 class="card-title">Manage Kotak</h4>
+                            <h4 class="card-title">Manage Kotak P3K</h4>
                         </div>
                         <div class="col-4 text-right">
                             <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
                                 data-bs-target="#addpemakaian">
-                                Add Pemakaian
+                                Add Kotak P3K
                             </button>
                         </div>
                     </div>
@@ -63,7 +63,8 @@
                                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     List Barang
                                                 </a>
-                                                <div class="dropdown-menu  dropdown-menu-arrow">
+                                                <div class="dropdown-menu  dropdown-menu-arrow"
+                                                    style="max-height: 200px; overflow-y: auto;">
                                                     @foreach ($d as $b)
                                                         <a disabled class="dropdown-item "
                                                             href="#">{{ $b->barang->barang_nama }}</a>
@@ -79,10 +80,12 @@
                                                     <i class="fas fa-ellipsis-v"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                                    {{-- <a class="dropdown-item edit-button" data-bs-toggle="modal"
-                                                        data-bs-target="#editpemakaian" data-id="{{ $d->kondisi_id }}"
-                                                        data-kondisi-nama="{{ $d->nama_pemakai }}"
-                                                        data-url="{{ url('kondisi/' . $d->kondisi_id) }}">Edit</a> --}}
+                                                    <a class="dropdown-item edit-button" data-bs-toggle="modal"
+                                                        data-bs-target="#editkotak"
+                                                        data-id="{{ $b->kotakP3k->kotak_p3k_id }}"
+                                                        data-kotak-lokasi="{{ $key }}"
+                                                        data-pecah="{{ $d }}"
+                                                        data-url="{{ url('kotak/' . $b->kotakP3k->kotak_p3k_id) }}">Edit</a>
                                                     {{-- <a class="dropdown-item
                                                         detail-button"
                                                         data-id="{{ $d->pemakaian_id }}"
@@ -104,6 +107,7 @@
 
                             </tbody>
                         </table>
+
                     </div>
                 </div>
                 <div class="card-footer ">
@@ -132,11 +136,12 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Add Kondisi</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Add Kotak P3K</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form role="form" method="POST" action="{{ route('kotak.store') }}" enctype="multipart/form-data">
+                    <form role="form" method="POST" onsubmit="return validateForm()"
+                        action="{{ route('kotak.store') }}" enctype="multipart/form-data">
 
                         @csrf
                         <!-- Name role -->
@@ -151,34 +156,92 @@
                                 </span>
                             @enderror
                         </div>
+
                         <div id="barang_container">
+                            @if (old('barang_id'))
+                                @foreach (old('barang_id') as $index => $barangId)
+                                    <div class="form-group row mt-2 align-items-center"
+                                        id="barang_group_{{ $index }}">
+                                        <!-- Dropdown Barang -->
+                                        <div class="col-md-6">
+                                            <label for="barang_id_{{ $index }}" class="col-form-label">Jenis
+                                                Barang</label>
+                                            <select name="barang_id[]" id="barang_id_{{ $index }}"
+                                                class="form-select @error("barang_id.$index") is-invalid @enderror">
+                                                <option value="">--Pilih--</option>
+                                                @foreach ($barang as $b)
+                                                    <option value="{{ $b->barang_id }}"
+                                                        {{ $barangId == $b->barang_id ? 'selected' : '' }}>
+                                                        {{ $b->barang_nama }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            @error("barang_id.$index")
+                                                <span class="invalid-feedback" role="alert">
+                                                    {{ $message }}
+                                                </span>
+                                            @enderror
+                                        </div>
+                                        
+                                        @if ($b->tipe == 'number')
+                                            
+                                        <!-- Input Jumlah -->
+                                        <div class="col-md-4">
+                                            <label for="jumlah_{{ $index }}" class="col-form-label">Jumlah</label>
+                                            <input type="number" name="jumlah[]" id="jumlah_{{ $index }}"
+                                            class="form-control @error("jumlah.$index") is-invalid @enderror"
+                                            value="{{ old('jumlah')[$index] ?? '' }}" placeholder="Masukkan jumlah">
+                                            @error("jumlah.$index")
+                                            <span class="invalid-feedback" role="alert">
+                                                {{ $message }}
+                                            </span>
+                                            @enderror
+                                        </div>
+                                        @endif
+                                    </div>
+                                @endforeach
+                            @else
+                                <!-- Default jika tidak ada input sebelumnya -->
+                                <div class="form-group row mt-2 align-items-center" id="barang_group_0">
+                                    <!-- Dropdown Barang -->
+                                    <div class="col-md-6">
+                                        <label for="barang_id_0" class="col-form-label">Jenis Barang</label>
+                                        <select name="barang_id[]" id="barang_id_0" class="form-select">
+                                            <option value="">--Pilih--</option>
+                                            @foreach ($barang as $b)
+                                                <option value="{{ $b->barang_id }}">{{ $b->barang_nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
 
-                            <div class="form-group" id="barang_group_0">
-                                <label for="barang_id_0" class="col-form-label">Jenis Barang</label>
-                                <select name="barang_id[]" id="barang_id_0" class="form-select">
-                                    <option value="">--Pilih--</option>
-                                    @foreach ($barang as $b)
-                                        <option value="{{ $b->barang_id }}">{{ $b->barang_nama }}</option>
-                                    @endforeach
-                                </select>
-                                @error('barang_id')
-                                    <span class="invalid-feedback" role="alert">
-                                        {{ $errors->first('barang_id') }}
-                                    </span>
-                                @enderror
-                            </div>
-
+                                    <!-- Input Jumlah -->
+                                    <div class="col-md-4">
+                                        <label for="jumlah_0" class="col-form-label">Jumlah</label>
+                                        <input type="number" name="jumlah[]" id="jumlah_0" class="form-control"
+                                            placeholder="Masukkan jumlah">
+                                    </div>
+                                </div>
+                            @endif
                         </div>
-                        <div id="error_message" style="color: red; margin-top: 10px;"></div>
+
+
                         <div class="mb-2">
+                            <button type="button" class="btn btn-success" onclick="addBarang()">Add Barang</button>
+                            <button type="button" class="btn btn-danger" onclick="removeBarang()">Remove Barang</button>
+                        </div>
+
+
+
+                        <div id="error_message" style="color: red; margin-top: 10px;"></div>
+                        {{-- <div class="mb-2">
                             <button type="button" class="btn btn-success" onclick="addBarang()">Add Barang</button>
                             <button type="button" class="btn btn-danger" onclick="removeBarang()">Remove
                                 Barang</button>
-                        </div>
+                        </div> --}}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Tambah Kondisi</button>
+                    <button type="submit" class="btn btn-primary">Tambah Kotak P3K</button>
                 </div>
                 </form>
             </div>
@@ -186,7 +249,7 @@
     </div>
 
     <!-- Modal Edit role -->
-    {{-- <div class="modal fade" id="editpemakaian" tabindex="-1" aria-labelledby="editbarangTitle" aria-hidden="true">
+    <div class="modal fade" id="editkotak" tabindex="-1" aria-labelledby="editbarangTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -200,17 +263,22 @@
                         @method('PUT')
 
                         <!-- Name role -->
-                        <div class="form-group{{ $errors->has('edit_kondisi_nama') ? ' has-danger' : '' }}">
-                            <label for="edit-kondisi-nama" class="col-form-label">Name Barang: </label>
-                            <input type="text" name="edit_kondisi_nama" id="edit-kondisi-nama"
-                                class="form-control{{ $errors->has('edit_kondisi_nama') ? ' is-invalid' : '' }}"
-                                placeholder="Name Barang" value="{{ old('edit_kondisi_nama') }}">
-                            @if ($errors->has('edit_kondisi_nama'))
+                        <div class="form-group @error('edit_lokasi') has-danger @enderror">
+                            <label for="edit_lokasi" class="col-form-label">Lokasi Kotak </label>
+                            <input type="text" name="edit_lokasi" id="edit_lokasi"
+                                class="form-control @error('edit_lokasi') is-invalid @enderror" placeholder="Nama Pemakai"
+                                value="{{ old('edit_lokasi') }}">
+                            @error('edit_lokasi')
                                 <span class="invalid-feedback" role="alert">
-                                    {{ $errors->first('edit_kondisi_nama') }}
+                                    {{ $errors->first('edit_lokasi') }}
                                 </span>
-                            @endif
+                            @enderror
                         </div>
+
+                        <label class="col-form-label">Jenis Barang</label>
+                        <div id="barang_edit_container">
+                        </div>
+                        <button type="button" id="tambah_barang" class="btn btn-success">Tambah Barang</button>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="text-white btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -220,9 +288,91 @@
             </div>
         </div>
     </div>
+    {{-- <div class="modal fade" id="editkotak" tabindex="-1" aria-labelledby="editbarangTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editbarangTitle">Edit Barang</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editkondisiForm" method="POST" action="{{ route('kotak.update', $kotak->id ?? '') }}" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+    
+                        <!-- Lokasi Kotak -->
+                        <div class="form-group">
+                            <label for="edit_lokasi" class="col-form-label">Lokasi Kotak</label>
+                            <input type="text" name="edit_lokasi" id="edit_lokasi" class="form-control @error('edit_lokasi') is-invalid @enderror" placeholder="Lokasi Kotak" value="{{ old('edit_lokasi', $kotak->lokasi ?? '') }}">
+                            @error('edit_lokasi')
+                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                            @enderror
+                        </div>
+    
+                        <!-- Barang Dinamis -->
+                        <div id="barang_edit_container">
+                            <label class="col-form-label">Jenis Barang</label>
+                            <!-- Elemen Barang akan ditambahkan secara dinamis oleh JavaScript -->
+                            @if (old('barang_id'))
+                            @foreach (old('barang_id') as $index => $barangId)
+                            <div class="form-group row mt-2 align-items-center" id="barang_group_{{ $index }}">
+                                <div class="col-md-5">
+                                    <select name="barang_id[]" id="barang_id_{{ $index }}" class="form-select @error('barang_id.' . $index) is-invalid @enderror">
+                                        <option value="">--Pilih--</option>
+                                        @foreach ($barang as $b)
+                                        <option value="{{ $b->barang_id }}" {{ $barangId == $b->barang_id ? 'selected' : '' }}>
+                                            {{ $b->barang_nama }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                    @error("barang_id.{$index}")
+                                    <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="number" name="jumlah[]" id="jumlah_{{ $index }}" class="form-control @error('jumlah.' . $index) is-invalid @enderror" value="{{ old('jumlah')[$index] ?? '' }}" placeholder="Jumlah">
+                                    @error("jumlah.{$index}")
+                                    <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="hapusField('{{ $index }}')">Hapus</button>
+                                </div>
+                            </div>
+                            @endforeach
+                            @else
+                            <div class="form-group row mt-2 align-items-center" id="barang_group_0">
+                                <div class="col-md-5">
+                                    <select name="barang_id[]" id="barang_id_0" class="form-select">
+                                        <option value="">--Pilih--</option>
+                                        @foreach ($barang as $b)
+                                        <option value="{{ $b->barang_id }}">{{ $b->barang_nama }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="number" name="jumlah[]" id="jumlah_0" class="form-control" placeholder="Jumlah">
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="hapusField('0')">Hapus</button>
+                                </div>
+                            </div>
+                            @endif
+                            <button type="button" id="tambah_barang" class="btn btn-success">Tambah Barang</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Update Barang</button>
+                </div>
+            </div>
+        </div>
+    </div> --}}
 
-        <!-- Modal Delete role -->
-        {{-- <div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+
+    <!-- Modal Delete role -->
+    {{-- <div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -248,75 +398,47 @@
 
 @stack('js')
 <script>
-    // document.addEventListener('DOMContentLoaded', function() {
-    //     const barangContainer = document.getElementById('barang-container');
-    //     const addBarangButton = document.getElementById('add-barang');
-
-    //     addBarangButton.addEventListener('click', function() {
-    //         const newSelect = document.createElement('div');
-    //         newSelect.classList.add('form-group', 'mb-3');
-
-    //         newSelect.innerHTML = `
-    //             <label for="barang_id" class="col-form-label">Jenis Barang</label>
-    //             <div class="d-flex align-items-center">
-    //                 <select name="barang_id[]" class="form-select">
-    //                     <option value="">--Pilih--</option>
-    //                     @foreach ($barang as $b)
-    //                         <option value="{{ $b->barang_id }}">{{ $b->barang_nama }}</option>
-    //                     @endforeach
-    //                 </select>
-    //                 <button type="button" class="btn btn-danger btn-sm ms-2 remove-barang">Hapus</button>
-    //             </div>
-    //         `;
-
-    //         barangContainer.appendChild(newSelect);
-
-    //         // Add event listener to remove button
-    //         newSelect.querySelector('.remove-barang').addEventListener('click', function() {
-    //             barangContainer.removeChild(newSelect);
-    //         });
-    //     });
-    // });
-
-    let barangCount = 1; // Awal jumlah dropdown
+    let barangCount = {{ old('barang_id') ? count(old('barang_id')) : 1 }};
 
     function addBarang() {
-        const container = document.getElementById('barang_container'); // Container utama
-
-        // Membuat elemen baru
+        const container = document.getElementById('barang_container');
         const newGroup = document.createElement('div');
-        newGroup.classList.add('form-group', 'mt-2');
+        newGroup.classList.add('form-group', 'row', 'mt-2', 'align-items-center');
         newGroup.id = `barang_group_${barangCount}`;
 
-        // Template dropdown baru
         newGroup.innerHTML = `
-        <label for="barang_id_${barangCount}" class="col-form-label">Jenis Barang</label>
-        <select name="barang_id[]" id="barang_id_${barangCount}" class="form-select" onchange="validateBarang()">
-            <option value="">--Pilih--</option>
-            @foreach ($barang as $b)
-                <option value="{{ $b->barang_id }}">{{ $b->barang_nama }}</option>
-            @endforeach
-        </select>
-    `;
+        <!-- Dropdown Barang -->
+        <div class="col-md-6">
+            <label for="barang_id_${barangCount}" class="col-form-label">Jenis Barang</label>
+            <select name="barang_id[]" id="barang_id_${barangCount}" class="form-select">
+                <option value="">--Pilih--</option>
+                @foreach ($barang as $b)
+                    <option value="{{ $b->barang_id }}">{{ $b->barang_nama }}</option>
+                @endforeach
+            </select>
+        </div>
 
-        // Tambahkan elemen baru ke dalam container
+        <!-- Input Jumlah -->
+        <div class="col-md-4">
+            <label for="jumlah_${barangCount}" class="col-form-label">Jumlah</label>
+            <input type="number" name="jumlah[]" id="jumlah_${barangCount}" class="form-control" placeholder="Masukkan jumlah">
+        </div>
+    `;
         container.appendChild(newGroup);
-        barangCount++; // Tambah jumlah dropdown
+        barangCount++;
     }
 
     function removeBarang() {
-        const container = document.getElementById('barang_container'); // Container utama
-
-        // Hanya hapus jika ada lebih dari satu elemen
+        const container = document.getElementById('barang_container');
         if (barangCount > 1) {
-            barangCount--; // Kurangi jumlah dropdown
-            const lastGroup = document.getElementById(`barang_group_${barangCount}`); // Ambil elemen terakhir
-            container.removeChild(lastGroup); // Hapus elemen terakhir
-            validateBarang(); // Validasi ulang setelah penghapusan
+            barangCount--;
+            const lastGroup = document.getElementById(`barang_group_${barangCount}`);
+            container.removeChild(lastGroup);
         } else {
-            alert("Minimal satu dropdown harus ada."); // Beri peringatan
+            alert("Minimal satu barang harus ada.");
         }
     }
+
 
     function validateBarang() {
         const selectedValues = new Set(); // Untuk menyimpan barang yang dipilih
@@ -342,68 +464,19 @@
         errorContainer.textContent = errorMessage;
     }
 
+    function validateForm() {
+        // Panggil validasi barang
+        validateBarang();
 
-    // let barangCount = 1; // Hitung jumlah dropdown yang ada
+        const errorContainer = document.getElementById('error_message');
+        if (errorContainer.textContent) {
+            // Jika ada error, jangan submit form
+            return false;
+        }
 
-    // // let barangCount = 1; // Hitung jumlah dropdown yang ada
+        return true;
+    }
 
-    // function addBarang() {
-    //     const container = document.getElementById('barang_container');
-
-    //     // Buat elemen baru untuk dropdown
-    //     const newInputGroup = document.createElement('div');
-    //     newInputGroup.classList.add('form-group', 'mt-2');
-    //     newInputGroup.id = `barang_group_${barangCount}`;
-    //     newInputGroup.innerHTML = `
-    //     <select name="barang_id[]" id="barang_id_${barangCount}" class="form-select">
-    //         <option value="">--Pilih--</option>
-    //         @foreach ($barang as $b)
-    //             <option value="{{ $b->barang_id }}">{{ $b->barang_nama }}</option>
-    //         @endforeach
-    //     </select>
-    // `;
-
-    //     // Tambahkan elemen ke dalam container
-    //     container.appendChild(newInputGroup);
-    //     barangCount++; // Increment jumlah dropdown
-    //     console.log("Barang ditambahkan:", barangCount);
-    // }
-
-    // function removeBarang() {
-    //     const container = document.getElementById('barang_container');
-
-    //     // Hapus dropdown terakhir jika lebih dari satu
-    //     if (barangCount > 1) {
-    //         barangCount--; // Decrement jumlah dropdown
-    //         const lastInputGroup = document.getElementById(`barang_group_${barangCount}`);
-    //         container.removeChild(lastInputGroup);
-    //     } else {
-    //         alert("Minimal satu dropdown harus ada.");
-    //     }
-    // }
-
-
-    // function addSubUraian() {
-    //     const container = document.getElementById('barang_container');
-    //     const newInputGroup = document.createElement('div');
-    //     newInputGroup.classList.add('form-group');
-    //     newInputGroup.innerHTML = `
-    //     <label for="sub_uraian_nama_${subUraianCount}" class="col-form-label">Name Sub Uraian: </label>
-    //     <input type="text" name="sub_uraian_nama[]" id="sub_uraian_nama_${subUraianCount}" class="form-control" placeholder="Name Sub Uraian">
-    // `;
-    //     container.appendChild(newInputGroup);
-    //     subUraianCount++;
-    // }
-
-    // function removeSubUraian() {
-    //     const container = document.getElementById('barang_container');
-    //     if (subUraianCount > 1) {
-    //         container.removeChild(container.lastElementChild);
-    //         subUraianCount--;
-    //     } else {
-    //         alert("Minimal satu input harus ada.");
-    //     }
-    // }
 
     function updatePaginationLimit(limit) {
         const url = new URL(window.location.href);
@@ -411,48 +484,295 @@
         window.location.href = url.toString(); // Redirect ke URL baru
     }
 
+    // document.addEventListener('DOMContentLoaded', function() {
+    //     // Modal Add - Jika ada error di lokasi, barang_id, atau jumlah
+    //     if (
+    //         {{ $errors->has('lokasi') || $errors->has('barang_id.*') || $errors->has('jumlah.*') ? 'true' : 'false' }}
+    //     ) {
+    //         var addBarangModal = new bootstrap.Modal(document.getElementById('addpemakaian'));
+    //         addBarangModal.show();
+    //     }
+
+    //     // Modal Edit - Jika ada error di edit_lokasi, edit_barang_id, atau edit_jumlah
+    //     if (
+    //         {{ $errors->has('edit_lokasi') || $errors->has('edit_barang_id.*') || $errors->has('edit_jumlah.*') ? 'true' : 'false' }}
+    //     ) {
+    //         var editBarangModal = new bootstrap.Modal(document.getElementById('editkotak'));
+    //         var url = localStorage.getItem('Url');
+    //         editBarangModal.show();
+    //         $('#editkondisiForm').attr('action', url);
+
+    //         // Ambil nilai inputan sebelumnya untuk ditampilkan di modal
+    //         $('#edit_lokasi').val(@json(old('edit_lokasi')));
+
+    //         // Clear container terlebih dahulu
+    //         $('#barang_edit_container').empty();
+
+    //         // Loop melalui barang_id dan jumlah
+    //         const editBarangIds = @json(old('edit_barang_id', []));
+    //         const editJumlahs = @json(old('edit_jumlah', []));
+
+    //         editBarangIds.forEach((barangId, index) => {
+    //             const jumlah = editJumlahs[index] || '';
+
+    //             // Tambahkan field barang dan jumlah ke dalam modal
+    //             $('#barang_edit_container').append(`
+    //             <div class="form-group row mt-2 align-items-center" id="barang_group_${index}">
+    //                 <div class="col-md-6">
+    //                     <label for="edit_barang_id_${index}" class="col-form-label">Jenis Barang</label>
+    //                     <select name="edit_barang_id[]" id="edit_barang_id_${index}" class="form-select">
+    //                         <option value="">--Pilih--</option>
+    //                         @foreach ($barang as $b)
+    //                             <option value="{{ $b->barang_id }}" ${barangId == {{ $b->barang_id }} ? 'selected' : ''}>
+    //                                 {{ $b->barang_nama }}
+    //                             </option>
+    //                         @endforeach
+    //                     </select>
+    //                 </div>
+    //                 <div class="col-md-4">
+    //                     <label for="edit_jumlah_${index}" class="col-form-label">Jumlah</label>
+    //                     <input type="number" name="edit_jumlah[]" id="edit_jumlah_${index}" class="form-control" value="${jumlah}" placeholder="Masukkan jumlah">
+    //                 </div>
+    //             </div>
+    //         `);
+    //         });
+
+    //         console.log(@json($errors->all())); // Debugging
+    //     }
+    // });
+
     document.addEventListener('DOMContentLoaded', function() {
+        // Modal Add - Jika ada error di lokasi, barang_id, atau jumlah
         if (
-            {{ $errors->has('nama_pemakai') || $errors->has('divisi') || $errors->has('tanggal') || $errors->has('barang_id') || $errors->has('jumlah_pemakaian') || $errors->has('alasan_pemakaian') || $errors->has('kotak_p3k_id') || $errors->has('jam_pemakaian') ? 'true' : 'false' }}
+            {{ $errors->has('lokasi') || $errors->has('barang_id.*') || $errors->has('jumlah.*') ? 'true' : 'false' }}
         ) {
             var addBarangModal = new bootstrap.Modal(document.getElementById('addpemakaian'));
             addBarangModal.show();
         }
 
-        // Check and show the editpemakaian modal if there are errors for edit role
+        // Modal Edit - Jika ada error di edit_lokasi, edit_barang_id, atau edit_jumlah
         if (
-            {{ $errors->has('edit_kondisi_nama') ? 'true' : 'false' }}
-            // {{ $errors->has('edit_barang_nama') ? 'true' : 'false' }}
+            {{ $errors->has('edit_lokasi') || $errors->has('edit_barang_id.*') || $errors->has('edit_jumlah.*') ? 'true' : 'false' }}
         ) {
-            var editBarangModal = new bootstrap.Modal(document.getElementById('editpemakaian'));
+            var editBarangModal = new bootstrap.Modal(document.getElementById('editkotak'));
             var url = localStorage.getItem('Url');
             editBarangModal.show();
             $('#editkondisiForm').attr('action', url);
 
-            console.log(@json($errors->all()));
+            // Ambil nilai inputan sebelumnya untuk ditampilkan di modal
+            $('#edit_lokasi').val(@json(old('edit_lokasi')));
+
+            // Clear container terlebih dahulu
+            $('#barang_edit_container').empty();
+
+            // Loop melalui barang_id dan jumlah
+            const editBarangIds = @json(old('edit_barang_id', []));
+            const editJumlahs = @json(old('edit_jumlah', []));
+            const errorsBarang = @json($errors->get('edit_barang_id.*'));
+            const errorsJumlah = @json($errors->get('edit_jumlah.*'));
+
+            editBarangIds.forEach((barangId, index) => {
+                const jumlah = editJumlahs[index] || '';
+                const errorBarang = errorsBarang[`edit_barang_id.${index}`] || '';
+                const errorJumlah = errorsJumlah[`edit_jumlah.${index}`] || '';
+
+                // Tambahkan field barang dan jumlah ke dalam modal
+                $('#barang_edit_container').append(`
+                <div class="form-group row mt-2 align-items-center" id="barang_group_${index}">
+                    <div class="col-md-5">
+                        <label class="col-form-label">Jenis Barang</label>
+                        <select name="edit_barang_id[]" id="edit_barang_id_${index}" class="form-select ${errorBarang ? 'is-invalid' : ''}">
+                            <option value="">--Pilih--</option>
+                            @foreach ($barang as $b)
+                                <option value="{{ $b->barang_id }}" ${barangId == {{ $b->barang_id }} ? 'selected' : ''}>
+                                    {{ $b->barang_nama }}
+                                </option>
+                            @endforeach
+                        </select>
+                        ${errorBarang ? `<div class="invalid-feedback">${errorBarang[0]}</div>` : ''}
+                    </div>
+                    <div class="col-md-4">
+                        <label class="col-form-label">Jumlah</label>
+                        <input type="number" name="edit_jumlah[]" id="edit_jumlah_${index}" class="form-control ${errorJumlah ? 'is-invalid' : ''}" value="${jumlah}" placeholder="Masukkan jumlah">
+                        ${errorJumlah ? `<div class="invalid-feedback">${errorJumlah[0]}</div>` : ''}
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <button type="button" class="btn btn-danger mt-4 remove-field" data-index="${index}">Hapus</button>
+                    </div>
+                </div>
+            `);
+            });
+
+            // Fungsi hapus field barang
+            $('#barang_edit_container').on('click', '.remove-field', function() {
+                const index = $(this).data('index');
+                $(`#barang_group_${index}`).remove();
+            });
+
+            console.log(@json($errors->all())); // Debugging
         }
+
+        // Validasi barang tidak boleh sama
+        $('#editkondisiForm').on('submit', function(e) {
+            const barangIds = [];
+            let hasDuplicate = false;
+
+            $('select[name="edit_barang_id[]"]').each(function() {
+                const val = $(this).val();
+                if (barangIds.includes(val)) {
+                    hasDuplicate = true;
+                } else {
+                    barangIds.push(val);
+                }
+            });
+
+            if (hasDuplicate) {
+                alert('Barang tidak boleh duplikat.');
+                e.preventDefault();
+            }
+        });
     });
 
 
+
+
+    // document.addEventListener('DOMContentLoaded', function() {
+    //     var editButtons = document.querySelectorAll('.edit-button');
+
+    //     editButtons.forEach(function(button) {
+    //         button.addEventListener('click', function() {
+    //             var kotakId = this.getAttribute('data-id');
+    //             var kotakLokasi = this.getAttribute('data-kotak-lokasi');
+    //             var kotakpecah = this.getAttribute('data-pecah');
+    //             var actionUrl = this.getAttribute('data-url');
+    //             localStorage.setItem('Url', actionUrl);
+    //             var pecah = JSON.parse(kotakpecah);
+
+
+    //             console.log(pecah)
+
+    //             $('#edit-id').val(kotakId);
+    //             $('#edit_lokasi').val(kotakLokasi);
+
+    //             // Atur action form untuk update
+    //             $('#editkondisiForm').attr('action', actionUrl);
+
+    //             // Kosongkan container sebelum menambahkan elemen baru
+    //             var barangContainer = document.getElementById('barang_edit_container');
+    //             barangContainer.innerHTML = '';
+
+    //             // Loop untuk menambahkan elemen barang berdasarkan data JSON
+    //             pecah.forEach((item, index) => {
+    //                 var groupDiv = document.createElement('div');
+    //                 groupDiv.className = 'form-group row mt-2 align-items-center';
+    //                 groupDiv.id = `barang_group_${index}`;
+
+    //                 groupDiv.innerHTML = `
+    //                 <div class="col-md-6">
+    //                     <label for="barang_id_${index}" class="col-form-label">Jenis Barang</label>
+    //                     <select name="barang_id[]" id="barang_id_${index}" class="form-select">
+    //                         <option value="">--Pilih--</option>
+    //                         ${generateBarangOptions(item.barang_id)}
+    //                     </select>
+    //                 </div>
+    //                 <div class="col-md-4">
+    //                     <label for="jumlah_${index}" class="col-form-label">Jumlah</label>
+    //                     <input type="number" name="jumlah[]" id="jumlah_${index}" class="form-control" value="${item.jumlah}">
+    //                 </div>
+    //             `;
+    //                 barangContainer.appendChild(groupDiv);
+    //             });
+    //         });
+    //     });
+    //     function generateBarangOptions(selectedId) {
+    //         let barang = @json($barang); // Pastikan data barang dikirim dari controller
+    //         let options = '';
+    //         barang.forEach((b) => {
+    //             options +=
+    //                 `<option value="${b.barang_id}" ${b.barang_id == selectedId ? 'selected' : ''}>${b.barang_nama}</option>`;
+    //         });
+    //         return options;
+    //     }
+    // });
     document.addEventListener('DOMContentLoaded', function() {
         var editButtons = document.querySelectorAll('.edit-button');
+        var barangContainer = document.getElementById('barang_edit_container');
 
         editButtons.forEach(function(button) {
             button.addEventListener('click', function() {
-                var pemakaianId = this.getAttribute('data-id');
-                var pemakaianNama = this.getAttribute('data-kondisi-nama');
-                var pemakaianactionUrl = this.getAttribute('data-url');
-                localStorage.setItem('Url', actionUrl);
+                var kotakId = this.getAttribute('data-id');
+                var kotakLokasi = this.getAttribute('data-kotak-lokasi');
+                var kotakpecah = this.getAttribute('data-pecah');
+                var actionUrl = this.getAttribute('data-url');
 
+                // Parsing data JSON dari atribut data-pecah
+                var pecah = JSON.parse(kotakpecah);
 
-                $('#edit-id').val(barangId);
-                $('#edit-kondisi-nama').val(barangNama);
+                // Set nilai pada input lokasi
+                document.getElementById('edit_lokasi').value = kotakLokasi;
 
-                // Atur action form untuk update
-                $('#editkondisiForm').attr('action', actionUrl);
+                // Set action pada form
+                document.getElementById('editkondisiForm').action = actionUrl;
+
+                // Kosongkan container sebelum menambahkan elemen baru
+                barangContainer.innerHTML = '';
+
+                // Loop untuk menambahkan elemen barang berdasarkan data JSON
+                pecah.forEach((item, index) => {
+                    tambahFieldBarang(index, item.barang_id, item.jumlah);
+                });
             });
         });
+
+        // Fungsi untuk menambahkan field barang
+        function tambahFieldBarang(index, barangId = '', jumlah = '') {
+            var groupDiv = document.createElement('div');
+            groupDiv.className = 'form-group row mt-2 align-items-center';
+            groupDiv.id = `barang_group_${index}`;
+
+            groupDiv.innerHTML = `
+            <div class="col-md-5">
+                <select name="edit_barang_id[]" id="barang_id_${index}" class="form-select">
+                    <option value="">--Pilih--</option>
+                    ${generateBarangOptions(barangId)}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <input type="number" name="edit_jumlah[]" id="jumlah_${index}" class="form-control" value="${jumlah}" placeholder="Jumlah">
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-danger btn-sm" onclick="hapusField('${index}')">Hapus</button>
+            </div>
+        `;
+            barangContainer.appendChild(groupDiv);
+        }
+
+        // Fungsi untuk menghapus field barang
+        window.hapusField = function(index) {
+            var fieldGroup = document.getElementById(`barang_group_${index}`);
+            if (fieldGroup) {
+                barangContainer.removeChild(fieldGroup);
+            }
+        };
+
+        // Tombol Tambah Barang
+        document.getElementById('tambah_barang').addEventListener('click', function() {
+            var newIndex = barangContainer.children.length;
+            tambahFieldBarang(newIndex);
+        });
+
+        // Fungsi untuk membuat opsi dropdown barang
+        function generateBarangOptions(selectedId) {
+            let barang = @json($barang); // Pastikan data barang dikirim dari controller
+            let options = '';
+            barang.forEach((b) => {
+                options +=
+                    `<option value="${b.barang_id}" ${b.barang_id == selectedId ? 'selected' : ''}>${b.barang_nama}</option>`;
+            });
+            return options;
+        }
     });
+
 
     document.addEventListener('DOMContentLoaded', function() {
         // Ketika tombol delete diklik

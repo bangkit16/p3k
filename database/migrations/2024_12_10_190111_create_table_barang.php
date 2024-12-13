@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('barang_id');
             $table->string('barang_nama');
             $table->integer('jumlah_standar');
+            $table->enum('tipe', ['number', 'select'])->default('number');
             $table->timestamps();
         });
     }

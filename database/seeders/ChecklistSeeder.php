@@ -17,11 +17,23 @@ class ChecklistSeeder extends Seeder
         
         //
         DB::table('checklist')->insert([
-            'tanggal' => '2024-12-10',  'user_id' => 1 ,'kotak_p3k_id' => '2', 'created_at' => now(), 'updated_at' => now()
+            'tanggal' => '2024-12-10',  'user_id' => 1 ,'kotak_p3k_id' => '1', 'created_at' => now(), 'updated_at' => now()
             
         ]);
         DB::table('checklist')->insert([
             'tanggal' => '2024-12-15',  'user_id' => 1 ,'kotak_p3k_id' => '2', 'created_at' => now(), 'updated_at' => now()
+            
+        ]);
+        DB::table('checklist')->insert([
+            'tanggal' => '2024-12-17',  'user_id' => 3 ,'kotak_p3k_id' => '1', 'created_at' => now(), 'updated_at' => now()
+            
+        ]);
+        DB::table('checklist')->insert([
+            'tanggal' => '2024-12-17',  'user_id' => 3 ,'kotak_p3k_id' => '2', 'created_at' => now(), 'updated_at' => now()
+            
+        ]);
+        DB::table('checklist')->insert([
+            'tanggal' => '2024-12-17',  'user_id' => 3 ,'kotak_p3k_id' => '1', 'created_at' => now(), 'updated_at' => now()
             
         ]);
         // Checklist::insert([

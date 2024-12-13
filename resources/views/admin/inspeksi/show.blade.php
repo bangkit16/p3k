@@ -7,7 +7,7 @@
                 <div class="card-header">
                     <div class="row">
                         <div class="col-8">
-                            <h4 class="card-title h4">Manage Inspeksi</h4>
+                            <h4 class="card-title h4">Detail Inspeksi</h4>
                         </div>
                         <div class="col-4 text-right">
                             {{-- <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
@@ -20,6 +20,11 @@
                 <div class="card-body">
                     @include('admin.alerts.success')
                     @include('admin.alerts.alert')
+                    <div class="container-fluid">
+                        <a class="btn btn-success mb-3" href="{{ route('laporan.checklist.pdf', $id) }}">Cetak PDF</a>
+                        <a class="btn btn-success mb-3" href="{{ route('laporan.checklist.excel', $id) }}">Cetak Excel</a>
+                        <a class="btn btn-success mb-3" href="{{ route('laporan.checklist.print', $id) }}">Print</a>
+                    </div>
                     {{-- <div class="container-fluid">
                         <form method="GET" action="{{ route('kondisi.index') }}" class="d-flex w-100">
                             <div class="form-group flex-grow-1 me-2">
@@ -39,6 +44,9 @@
                                 <div class="mb-2"><strong>Lokasi P3K</strong></div>
                             </div>
                             <div class="col-md-8">
+                                {{-- @php
+                                    dd($data);
+                                @endphp --}}
                                 <div class="mb-2">{{ $data->kotakP3k->lokasi }}</div>
                             </div>
                         </div>
@@ -49,16 +57,24 @@
                             <div class="col-md-8">
                                 <div class="mb-2">
                                     @switch($data->status)
-                                        @case('belum_diseleksi')
-                                            <span class="badge bg-info">Belum Diseleksi</span></span>
+                                        @case('Belum Approve')
+                                            <span class="badge bg-secondary">Belum Approve</span></span>
                                         @break
 
-                                        @case('seleksi')
-                                            <span class="badge bg-success">Approve Semua</span></span>
+                                        @case('Approve Admin')
+                                            <span class="badge bg-primary">Approve Admin</span></span>
                                         @break
 
-                                        @case('revisi')
-                                            <span class="badge bg-warning">Revisi</span></span>
+                                        @case('Approve Manager')
+                                            <span class="badge bg-success">Approve Manager</span></span>
+                                        @break
+
+                                        @case('Ditolak Admin')
+                                            <span class="badge bg-warning">Ditolak Admin</span></span>
+                                        @break
+
+                                        @case('Ditolak Manager')
+                                            <span class="badge bg-warning">Ditolak Manager</span></span>
                                         @break
 
                                         @default

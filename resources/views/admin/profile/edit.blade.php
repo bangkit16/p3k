@@ -1,11 +1,11 @@
-@extends('layouts.app', ['page' => __('User Profile'), 'pageSlug' => 'profile'])
+@extends('admin.layouts.app', ['page' => ('User Profile'), 'pageSlug' => 'profile'])
 
 @section('content')
     <div class="row">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="title">{{ _('Edit Profile') }}</h5>
+                    <h5 class="title">{{ ('Edit Profile') }}</h5>
                 </div>
                 @include('admin.alerts.success')
                 <form id="update-form" method="post" action="{{ url('profile/' . auth()->user()->user_id) }}"
@@ -17,19 +17,19 @@
                             @include('alerts.success')
 
                             <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
-                                <label>{{ _('Name') }}</label>
-                                <input type="text" name="name" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ _('Name') }}" value="{{ old('name', auth()->user()->name) }}">
-                                @include('alerts.feedback', ['field' => 'name'])
+                                <label>{{ ('Name') }}</label>
+                                <input type="text" name="name" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ ('Name') }}" value="{{ old('name', auth()->user()->name) }}">
+                                {{-- @include('alerts.feedback', ['field' => 'name']) --}}
                             </div>
 
                             <div class="form-group{{ $errors->has('email') ? ' has-danger' : '' }}">
-                                <label>{{ _('Email address') }}</label>
-                                <input type="email" name="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="{{ _('Email address') }}" value="{{ old('email', auth()->user()->email) }}">
-                                @include('alerts.feedback', ['field' => 'email'])
+                                <label>{{ ('Email address') }}</label>
+                                <input type="email" name="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="{{ ('Email address') }}" value="{{ old('email', auth()->user()->email) }}">
+                                {{-- @include('alerts.feedback', ['field' => 'email']) --}}
                             </div>
                     </div>
                     <div class="card-footer">
-                        <button type="submit" class="btn btn-fill btn-primary">{{ _('Save') }}</button>
+                        <button type="submit" class="btn btn-fill btn-primary">{{ ('Save') }}</button>
                     </div>
                 </form>
             </div>
@@ -37,7 +37,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="title">{{ _('Password') }}</h5>
+                    <h5 class="title">{{ ('Password') }}</h5>
                 </div>
                 <form method="post" action="{{ url('profile/password/' . auth()->user()->user_id) }}" autocomplete="off">
                     <div class="card-body">
@@ -47,15 +47,15 @@
                         @include('admin.alerts.success', ['key' => 'password_status'])
 
                         <div class="form-group{{ $errors->has('old_password') ? ' has-danger' : '' }}">
-                            <label>{{ __('Current Password') }}</label>
-                            <input type="password" name="old_password" class="form-control{{ $errors->has('old_password') ? ' is-invalid' : '' }}" placeholder="{{ __('Current Password') }}" value="" required>
-                            @include('alerts.feedback', ['field' => 'old_password'])
+                            <label>{{ ('Current Password') }}</label>
+                            <input type="password" name="old_password" class="form-control{{ $errors->has('old_password') ? ' is-invalid' : '' }}" placeholder="{{ ('Current Password') }}" value="" required>
+                            {{-- @include('alerts.feedback', ['field' => 'old_password']) --}}
                         </div>
 
                         <div class="form-group{{ $errors->has('password') ? ' has-danger' : '' }}">
-                            <label>{{ __('New Password') }}</label>
-                            <input type="password" name="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" placeholder="{{ __('New Password') }}" value="" required>
-                            @include('alerts.feedback', ['field' => 'password'])
+                            <label>{{ ('New Password') }}</label>
+                            <input type="password" name="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" placeholder="{{ ('New Password') }}" value="" required>
+                            {{-- @include('alerts.feedback', ['field' => 'password']) --}}
                         </div>
 
                         <div class="form-group">
@@ -63,16 +63,16 @@
                             <input type="password" name="password_confirmation"
                                 class="form-control{{ $errors->has('password_confirmation') ? ' is-invalid' : '' }}"
                                 placeholder="{{ 'Konfirmasi Password' }}" value="">
-                            @include('admin.alerts.feedback', ['field' => 'password_confirmation'])
+                            {{-- @include('admin.alerts.feedback', ['field' => 'password_confirmation']) --}}
                         </div>
                     </div>
                     <div class="card-footer">
-                        <button type="submit" class="btn btn-fill btn-primary">{{ _('Change password') }}</button>
+                        <button type="submit" class="btn btn-fill btn-primary">{{ ('Change password') }}</button>
                     </div>
                 </form>
             </div>
         </div>
-        <div class="col-md-4">
+        {{-- <div class="col-md-4">
             <div class="card card-user">
                 <div class="card-body">
                     <p class="card-text">
@@ -86,12 +86,12 @@
                                 <h5 class="title">{{ auth()->user()->name }}</h5>
                             </a>
                             <p class="description">
-                                {{ _('Ceo/Co-Founder') }}
+                                {{ ('Ceo/Co-Founder') }}
                             </p>
                         </div>
                     </p>
                     <div class="card-description">
-                        {{ _('Do not be scared of the truth because we need to restart the human foundation in truth And I love you like Kanye loves Kanye I love Rick Owens’ bed design but the back is...') }}
+                        {{ ('Do not be scared of the truth because we need to restart the human foundation in truth And I love you like Kanye loves Kanye I love Rick Owens’ bed design but the back is...') }}
                     </div>
                 </div>
                 <div class="card-footer">
@@ -108,7 +108,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 @endsection
 

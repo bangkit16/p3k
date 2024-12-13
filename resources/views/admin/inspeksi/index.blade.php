@@ -58,16 +58,24 @@
                                         <td>
 
                                             @switch($d->status)
-                                                @case('belum_diseleksi')
-                                                    <span class="badge bg-info">Belum Diseleksi</span></span>
+                                                @case('Belum Approve')
+                                                    <span class="badge bg-secondary">Belum Approve</span></span>
                                                 @break
 
-                                                @case('seleksi')
-                                                    <span class="badge bg-success">Approve Semua</span></span>
+                                                @case('Approve Admin')
+                                                    <span class="badge bg-primary">Approve Admin</span></span>
                                                 @break
 
-                                                @case('revisi')
-                                                    <span class="badge bg-warning">Revisi</span></span>
+                                                @case('Approve Manager')
+                                                    <span class="badge bg-success">Approve Manager</span></span>
+                                                @break
+
+                                                @case('Ditolak Admin')
+                                                    <span class="badge bg-warning">Ditolak Admin</span></span>
+                                                @break
+
+                                                @case('Ditolak Manager')
+                                                    <span class="badge bg-warning">Ditolak Manager</span></span>
                                                 @break
 
                                                 @default
@@ -84,22 +92,35 @@
                                                         data-bs-target="#editkondisi" data-id="{{ $d->kondisi_id }}"
                                                         data-kondisi-nama="{{ $d->kondisi_nama }}"
                                                         data-url="{{ url('kondisi/' . $d->kondisi_id) }}">Edit</a> --}}
+
                                                     <a class="dropdown-item
                                                         detail-button"
                                                         data-id="{{ $d->checklist_id }}"
                                                         href="{{ route('inspeksi.show', $d->checklist_id) }}">Detail</a>
-                                                    <a class="dropdown-item
+                                                    @if (auth()->user()->role_id == 1 || auth()->user()->role_id == 2)
+                                                        <a class="dropdown-item
+                                                    approve-button"
+                                                            data-bs-toggle="modal" data-bs-target="#approveModal"
+                                                            data-id="{{ $d->checklist_id }}"
+                                                            data-url="{{ url('inspeksi/approve/' . $d->checklist_id) }}">Approve</a>
+                                                        <a class="dropdown-item
+                                                    tolak-button"
+                                                            data-bs-toggle="modal" data-bs-target="#tolakModal"
+                                                            data-id="{{ $d->checklist_id }}"
+                                                            data-url="{{ url('inspeksi/tolak/' . $d->checklist_id) }}">Tolak</a>
+                                                    @endif
+                                                    {{-- <a class="dropdown-item
                                                         delete-button"
                                                         data-bs-toggle="modal" data-bs-target="#deleteModal"
                                                         data-id="{{ $d->kondisi_id }}"
-                                                        data-url="{{ url('kondisi/' . $d->checklist_id) }}">Delete</a>
+                                                        data-url="{{ url('inspeksi/' . $d->checklist_id) }}">Delete</a> --}}
                                                 </div>
                                             </div>
                                         </td>
                                     </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="4" class="text-center">Tidak ada Kondisi yang ditemukan</td>
+                                            <td colspan="4" class="text-center">Tidak ada data yang ditemukan</td>
                                         </tr>
                                     @endforelse
 
@@ -200,28 +221,72 @@
     </div> --}}
 
         <!-- Modal Delete role -->
-        {{-- <div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Delete Barang</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Apakah kamu yakin menghapus data kondisi?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <form id="deleteKondisiForm" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-primary">Delete</button>
-                    </form>
+        <div class="modal fade" id="approveModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">Approve Checklist</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Apakah kamu yakin approve checklist p3k ini?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <form id="approveForm" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <button type="submit" class="btn btn-primary">Approve</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div> --}}
+        <div class="modal fade" id="tolakModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">Tolak Checklist</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Apakah kamu yakin tolak checklist p3k ini?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <form id="tolakForm" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <button type="submit" class="btn btn-primary">Tolak</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{-- <div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">Delete Barang</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Apakah kamu yakin menghapus data kondisi?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <form id="deleteKondisiForm" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-primary">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div> --}}
     @endsection
 
     @stack('js')
@@ -285,6 +350,34 @@
 
                     // Atur action form untuk delete
                     document.getElementById('deleteKondisiForm').setAttribute('action',
+                        barangDeleteUrl);
+                });
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ketika tombol delete diklik
+            document.querySelectorAll('.approve-button').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    // Ambil data dari atribut data-*
+                    var barangId = this.getAttribute('data-id');
+                    var barangDeleteUrl = this.getAttribute('data-url');
+
+                    // Atur action form untuk delete
+                    document.getElementById('approveForm').setAttribute('action',
+                        barangDeleteUrl);
+                });
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ketika tombol delete diklik
+            document.querySelectorAll('.tolak-button').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    // Ambil data dari atribut data-*
+                    var barangId = this.getAttribute('data-id');
+                    var barangDeleteUrl = this.getAttribute('data-url');
+
+                    // Atur action form untuk delete
+                    document.getElementById('tolakForm').setAttribute('action',
                         barangDeleteUrl);
                 });
             });

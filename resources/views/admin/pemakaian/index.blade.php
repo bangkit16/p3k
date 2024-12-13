@@ -1,4 +1,4 @@
-@extends('admin.layouts.app', ['page' => 'Riwayat Inspeksi', 'pageSlug' => 'riwayat'])
+@extends('admin.layouts.app', ['page' => 'Riwayat Pemakaian', 'pageSlug' => 'riwayat_pemakaian'])
 
 @section('content')
     <div class="row">
@@ -7,7 +7,7 @@
                 <div class="card-header">
                     <div class="row">
                         <div class="col-8">
-                            <h4 class="card-title">Manage Pemakai</h4>
+                            <h4 class="card-title">Riwayat Pemakaian</h4>
                         </div>
                         <div class="col-4 text-right">
                             <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
@@ -20,6 +20,14 @@
                 <div class="card-body">
                     @include('admin.alerts.success')
                     @include('admin.alerts.alert')
+                    @if ( auth()->user()->role_id == 1 || auth()->user()->role_id == 2)
+                        
+                    <div class="container-fluid">
+                        <a class="btn btn-success mb-3" href="{{ route('laporan.pemakaian.pdf') }}">Cetak PDF</a>
+                        <a class="btn btn-success mb-3" href="{{ route('laporan.pemakaian.excel') }}">Cetak Excel</a>
+                        <a class="btn btn-success mb-3" href="{{ route('laporan.pemakaian.print') }}">Print</a>
+                    </div>
+                    @endif
                     <div class="container-fluid">
                         <form method="GET" action="{{ route('pemakaian.index') }}" class="d-flex w-100">
                             <div class="form-group flex-grow-1 me-2">

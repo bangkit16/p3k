@@ -20,8 +20,18 @@ class InspeksiController extends Controller
     {
         //
         // $checklist = Checklist::with(['user' , 'inputChecklists.barang' , 'kondisiInputs.kondisi' , 'kotakP3k'])->where('user_id' , auth()->user()->id)->get()->toArray();
-        $data = Checklist::with(['user'  , 'kotakP3k'])->where('user_id' , auth()->user()->id)->get();
 
+        $data = Checklist::with(['user'  , 'kotakP3k']);
+        if(auth()->user()->role_id == 3){
+            
+            $data->where('user_id' , auth()->user()->id);
+        }
+        if(auth()->user()->role_id == 2 ){
+            
+            $data->orWhere('status' , 'Approve Admin')->orWhere('status' , 'Approve Manager')->orWhere('status' , 'Ditolak Manager');
+        }
+
+        $data = $data->get(); 
 
         // dd($data);
         return view('admin.inspeksi.index' , compact('data'));
@@ -32,6 +42,9 @@ class InspeksiController extends Controller
      */
     public function create(Request $request)
     {
+        if(auth()->user()->role_id == 2){
+            return redirect()->route('inspeksi.index')->withStatus('Anda tidak memiliki akses ke halaman ini.');
+        }
         //
         $idkotak = $request->idkotak;
 
@@ -102,9 +115,35 @@ class InspeksiController extends Controller
         }
 
 
-        return redirect()->route('kotak.create')->withStatus('Checklist P3K berhasil ditambahkan.');
+        return redirect()->route('inspeksi.index')->withStatus('Checklist P3K berhasil ditambahkan.');
         
         
+    }
+    public function approve($id){
+        $checklist = Checklist::find($id);
+        if (auth()->user()->role_id == 1) {
+            # code...
+            $checklist->status = 'Approve Admin';
+        }
+        else if (auth()->user()->role_id == 2) {
+            # code...
+            $checklist->status = 'Approve Manager';
+        }
+        $checklist->save();
+        return redirect()->route('inspeksi.index')->withStatus('Checklist P3K berhasil disetujui.');
+    }
+    public function tolak($id){
+        $checklist = Checklist::find($id);
+        if (auth()->user()->role_id == 1) {
+            # code...
+            $checklist->status = 'Ditolak Admin';
+        }
+        else if (auth()->user()->role_id == 2) {
+            # code...
+            $checklist->status = 'Ditolak Manager';
+        }
+        $checklist->save();
+        return redirect()->route('inspeksi.index')->withStatus('Checklist P3K berhasil ditolak.');
     }
     
     /**
@@ -113,12 +152,13 @@ class InspeksiController extends Controller
     public function show(string $id)
     {
         //
-        $data = Checklist::with(['user' , 'inputChecklists.barang' , 'kondisiInputs.kondisi' , 'kotakP3k'])->where('user_id' , auth()->user()->id)->where('checklist_id' , $id)->first();
-
+        $data = Checklist::with(['user' , 'inputChecklists.barang' , 'kondisiInputs.kondisi' , 'kotakP3k'])->where('checklist_id' , $id)->first();
+        
+        $id = $id;
         
 
         // dd($data->inputChecklists);
-        return view('admin.inspeksi.show' , compact('data'));
+        return view('admin.inspeksi.show' , compact('data' , 'id'));
     }
 
     /**

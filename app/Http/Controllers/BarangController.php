@@ -61,11 +61,13 @@ class BarangController extends Controller
         $validated = $request->validate([
             'barang_nama' => 'required',
             'jumlah_standar' => 'required|numeric|gt:0',
+            'tipe' => 'required',
         ],[
             'barang_nama.required' => 'Nama Barang harus diisi',
             'jumlah_standar.required' => 'Jumlah Standar harus diisi',
             'jumlah_standar.numeric' => 'Jumlah Standar harus berupa angka',
             'jumlah_standar.lt' => 'Jumlah Standar tidak boleh lebih besar dari 0',
+            'tipe.required' => 'Tipe harus diisi',
             
         ]);
         // dd($);
@@ -104,9 +106,11 @@ class BarangController extends Controller
 
         $validated = $request->validate([
             'edit_barang_nama' => 'required',
+            'edit_tipe' => 'required',
             'edit_jumlah_standar' => 'required|numeric|gt:0',
         ],[
             'edit_barang_nama.required' => 'Nama Barang harus diisi',
+            'edit_tipe.required' => 'Tipe harus diisi',
             'edit_jumlah_standar.required' => 'Jumlah Standar harus diisi',
             'edit_jumlah_standar.numeric' => 'Jumlah Standar harus berupa angka',
             'edit_jumlah_standar.lt' => 'Jumlah Standar tidak boleh lebih besar dari 0',
@@ -117,6 +121,7 @@ class BarangController extends Controller
         $barang->update([
             'barang_nama' => $validated['edit_barang_nama'],
             'jumlah_standar' => $validated['edit_jumlah_standar'],
+            'tipe' => $validated['edit_tipe'],
         ]);
 
         return redirect()->route('barang.index')->withStatus('Barang berhasil diperbaharui.');

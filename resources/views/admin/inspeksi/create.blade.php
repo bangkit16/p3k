@@ -1,4 +1,4 @@
-@extends('admin.layouts.app', ['page' => 'Manage Kotak', 'pageSlug' => 'manage_kotak'])
+@extends('admin.layouts.app', ['page' => 'Input Inspeksi', 'pageSlug' => 'input_inspeksi'])
 
 @section('content')
     <h4 class="card-title mb-3 fw-light">Input Inspeksi</h4>
@@ -21,6 +21,9 @@
                     </select>
 
                 </form>
+                @if (empty($idkotak))
+                <small class="text-danger">*Pilih kotak terlebih dahulu"></small>
+                @endif
             </div>
             {{-- </div> --}}
         </div>
