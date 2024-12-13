@@ -49,22 +49,52 @@
                                         No
                                     </th>
                                     <th scope="col">
-                                        Nama Pemakai Obat P3K
+                                        <span style="cursor: pointer;"
+                                            onclick="window.location.href='{{ request()->fullUrlWithQuery(['sort_by' => 'nama_pemakai', 'order' => $order === 'asc' ? 'desc' : 'asc']) }}'">
+                                            Nama Pemakai Obat P3K
+                                            @if ($sortBy === 'nama_pemakai')
+                                                {{ $order === 'asc' ? '🔼' : '🔽' }}
+                                            @endif
+                                        </span>
                                     </th>
                                     <th scope="col">
-                                        Divisi
+                                        <span style="cursor: pointer;"
+                                            onclick="window.location.href='{{ request()->fullUrlWithQuery(['sort_by' => 'divisi', 'order' => $order === 'asc' ? 'desc' : 'asc']) }}'">
+                                            Divisi
+                                            @if ($sortBy === 'divisi')
+                                                {{ $order === 'asc' ? '🔼' : '🔽' }}
+                                            @endif
+                                        </span>
                                     </th>
-                                    <th class="text-center" scope="col">
-                                        Tanggal Pemakaian
+                                    <th scope="col">
+                                        <span style="cursor: pointer;"
+                                            onclick="window.location.href='{{ request()->fullUrlWithQuery(['sort_by' => 'tanggal', 'order' => $order === 'asc' ? 'desc' : 'asc']) }}'">
+                                            Tanggal Pemakaian
+                                            @if ($sortBy === 'tanggal')
+                                                {{ $order === 'asc' ? '🔼' : '🔽' }}
+                                            @endif
+                                        </span>
                                     </th>
-                                    <th class="text-center" scope="col">
-                                        Jam Pemakaian
+                                    <th scope="col">
+                                        <span style="cursor: pointer;"
+                                            onclick="window.location.href='{{ request()->fullUrlWithQuery(['sort_by' => 'jam_pemakaian', 'order' => $order === 'asc' ? 'desc' : 'asc']) }}'">
+                                            Jam Pemakaian
+                                            @if ($sortBy === 'jam_pemakaian')
+                                                {{ $order === 'asc' ? '🔼' : '🔽' }}
+                                            @endif
+                                        </span>
                                     </th>
                                     <th scope="col">
                                         Jenis Obat P3K
                                     </th>
-                                    <th class="text-center" scope="col">
-                                        Jumlah Pemakaian
+                                    <th scope="col">
+                                        <span style="cursor: pointer;"
+                                            onclick="window.location.href='{{ request()->fullUrlWithQuery(['sort_by' => 'jumlah_pemakaian', 'order' => $order === 'asc' ? 'desc' : 'asc']) }}'">
+                                            Jumlah Pemakaian
+                                            @if ($sortBy === 'jumlah_pemakaian')
+                                                {{ $order === 'asc' ? '🔼' : '🔽' }}
+                                            @endif
+                                        </span>
                                     </th>
                                     <th scope="col">
                                         Alasan Pemakaian

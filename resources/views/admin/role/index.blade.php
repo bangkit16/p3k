@@ -138,7 +138,7 @@
                         @csrf
 
                         <!-- Name role -->
-                        <div class="form-group{{ $errors->has('role_name') ? ' has-danger' : '' }}">
+                        <div class="form-group">
                             <label for="role_name" class="col-form-label">Name Role: </label>
                             <input type="text" name="role_name" id="role_name"
                                 class="form-control{{ $errors->has('role_name') ? ' is-invalid' : '' }}"
@@ -151,7 +151,7 @@
                         </div>
 
                         <!-- Description role -->
-                        <div class="form-group{{ $errors->has('role_description') ? ' has-danger' : '' }}">
+                        <div class="form-group">
                             <label for="role_description" class="col-form-label">Description Role:
                             </label>
                             <textarea type="text" name="role_description" id="role_description"
@@ -186,7 +186,7 @@
                         @method('PUT')
 
                         <!-- Name role -->
-                        <div class="form-group{{ $errors->has('edit_role_name') ? ' has-danger' : '' }}">
+                        <div class="form-group">
                             <label for="edit-role-name" class="col-form-label">Name Role: </label>
                             <input type="text" name="edit_role_name" id="edit-role-name"
                                 class="form-control{{ $errors->has('edit_role_name') ? ' is-invalid' : '' }}"
@@ -199,7 +199,7 @@
                         </div>
 
                         <!-- Description role -->
-                        <div class="form-group{{ $errors->has('edit_role_description') ? ' has-danger' : '' }}">
+                        <div class="form-group">
                             <label for="edit-role-description" class="col-form-label">Description Role:
                             </label>
                             <textarea type="text" name="edit_role_description" id="edit-role-description"

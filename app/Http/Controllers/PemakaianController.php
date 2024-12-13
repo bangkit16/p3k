@@ -12,15 +12,66 @@ class PemakaianController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-        $data = Pemakaian::with(['kotakP3k' , 'barang' , 'user'])->get();
+        $limit = $request->input('limit', 10);  // Default pagination limit
+        $search = $request->search;
+
+        $bulanMap = [
+            'januari' => '01', 'februari' => '02', 'maret' => '03',
+            'april' => '04', 'mei' => '05', 'juni' => '06',
+            'juli' => '07', 'agustus' => '08', 'september' => '09',
+            'oktober' => '10', 'november' => '11', 'desember' => '12',
+        ];
+
+        $bulan = null;
+        if ($search) {
+            $searchLower = strtolower($search);
+            if (isset($bulanMap[$searchLower])) {
+                $bulan = $bulanMap[$searchLower];
+            }
+        }
+
+         // Query dasar
+        $data = Pemakaian::with(['kotakP3k' , 'barang' , 'user']);
+
+        if ($search) {
+            $barang = Barang::where('barang_nama', 'like', "%{$search}%")->pluck('barang_id');
+            $kotak = KotakP3K::where('lokasi', 'like', "%{$search}%")->pluck('kotak_p3k_id'); // Ambil ID User
+            $data->where(function ($q) use ($search, $bulan, $barang, $kotak) {
+                if ($barang->isNotEmpty()) {
+                    $q->orWhereIn('barang_id', $barang);
+                }
+                if ($kotak->isNotEmpty()) {
+                    $q->orWhere('kotak_p3k_id', $kotak); // Asumsikan patrol memiliki `user_id`
+                }
+                if ($bulan) {
+                    $q->orWhereMonth('tanggal', $bulan); // Cari berdasarkan bulan
+                }
+                $q->orWhere('tanggal', 'like', "%{$search}%")
+                ->orWhere('nama_pemakai', 'like', "%{$search}%")
+                ->orWhere('divisi', 'like', "%{$search}%");
+            });
+        }
+
+        // Sorting
+        $sortBy = $request->get('sort_by', 'pemakaian_id');  // Default sorting column (ganti dengan kolom yang ada di tabel Role)
+        $order = $request->get('order', 'asc');   // Default sorting order ('asc' atau 'desc')
+        // Terapkan sorting
+        $data->orderBy($sortBy, $order);
+
+        // Pagination atau semua data
+        if ($limit == 'all') {
+            $data = $data->get();  // Ambil semua data
+        } else {
+            $data = $data->paginate($limit)->appends($request->only('search', 'limit', 'sort_by', 'order')); // Tambahkan query params
+        }
+        // $data = Pemakaian::with(['kotakP3k' , 'barang' , 'user'])->get();
         // dd($data->toArray() , $data);
         $barang = Barang::all();
         $kotak = KotakP3K::all();
 
-        return view('admin.pemakaian.index' , compact('data' , 'barang' , 'kotak'));
+        return view('admin.pemakaian.index' , compact('data' , 'barang' , 'kotak', 'sortBy', 'order'));
     }
 
     /**

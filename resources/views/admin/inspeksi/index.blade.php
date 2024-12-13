@@ -21,7 +21,7 @@
                     @include('admin.alerts.success')
                     @include('admin.alerts.alert')
                     <div class="container-fluid">
-                        <form method="GET" action="{{ route('kondisi.index') }}" class="d-flex w-100">
+                        <form method="GET" action="{{ route('inspeksi.index') }}" class="d-flex w-100">
                             <div class="form-group flex-grow-1 me-2">
                                 <input type="text" name="search" class="form-control form-control-sm mt-1"
                                     placeholder="Cari berdasarkan nama kondisi" value="{{ request()->get('search') }}">
@@ -41,7 +41,13 @@
                                         Kotak P3K
                                     </th>
                                     <th scope="col">
-                                        Tanggal
+                                        <span style="cursor: pointer;"
+                                            onclick="window.location.href='{{ request()->fullUrlWithQuery(['sort_by' => 'tanggal', 'order' => $order === 'asc' ? 'desc' : 'asc']) }}'">
+                                            Tanggal
+                                            @if ($sortBy === 'tanggal')
+                                                {{ $order === 'asc' ? '🔼' : '🔽' }}
+                                            @endif
+                                        </span>
                                     </th>
                                     <th scope="col">
                                         Status

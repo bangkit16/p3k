@@ -39,7 +39,7 @@
                                 <tr>
                                     <th scope="col">
                                         <span style="cursor: pointer;"
-                                            onclick="window.location.href='{{ request()->fullUrlWithQuery(['sort_by' => 'barang_nama', 'order' => $order === 'asc' ? 'desc' : 'asc']) }}'">
+                                            onclick="window.location.href='{{ request()->fullUrlWithQuery(['sort_by' => 'kondisi_nama', 'order' => $order === 'asc' ? 'desc' : 'asc']) }}'">
                                             Nama Kondisi
                                             @if ($sortBy === 'kondisi_nama')
                                                 {{ $order === 'asc' ? '🔼' : '🔽' }}

@@ -30,7 +30,7 @@ class UserController extends Controller
 
         // Filter berdasarkan pencarian
         if ($search) {
-            $role = RoleSeeder::where('role_name', 'like', "%{$search}%")->get();
+            $role = Role::where('role_name', 'like', "%{$search}%")->get();
             if ($role->isNotEmpty()) {
                 $data->where(function ($q) use ($search, $role) {
                     $q->whereIn('role_id', $role->pluck('role_id'))

@@ -25,7 +25,9 @@ class BarangController extends Controller
 
         // Filter pencarian
         if ($search) {
-            $data->where('barang_nama', 'like', "%{$search}%");
+            $data->where('barang_nama', 'like', "%{$search}%")
+            ->orWhere('jumlah_standar', 'like', "%{$search}%")
+            ->orWhere('tipe', 'like', "%{$search}%");
         }
 
         // Terapkan sorting

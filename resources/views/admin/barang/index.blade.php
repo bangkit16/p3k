@@ -57,7 +57,7 @@
                                     </th>
                                     <th scope="col">
                                         <span style="cursor: pointer;"
-                                            onclick="window.location.href='{{ request()->fullUrlWithQuery(['sort_by' => 'jumlah_standar', 'order' => $order === 'asc' ? 'desc' : 'asc']) }}'">
+                                            onclick="window.location.href='{{ request()->fullUrlWithQuery(['sort_by' => 'tipe', 'order' => $order === 'asc' ? 'desc' : 'asc']) }}'">
                                             Tipe
                                             @if ($sortBy === 'tipe')
                                                 {{ $order === 'asc' ? '🔼' : '🔽' }}
