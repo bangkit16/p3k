@@ -22,7 +22,7 @@
 
                 </form>
                 @if (empty($idkotak))
-                <small class="text-danger">*Pilih kotak terlebih dahulu"></small>
+                    <small class="text-danger">*Pilih kotak terlebih dahulu"></small>
                 @endif
             </div>
             {{-- </div> --}}
@@ -81,15 +81,37 @@
                                         <td>{{ $b->barang->barang_nama }}</td>
                                         <td class="text-center">{{ $b->barang->jumlah_standar }}</td>
                                         <td>
-                                            <input type="number" name="jumlah_aktual[{{ $b->barang->barang_id }}]"
-                                                value="{{ old('jumlah_aktual.' . $b->barang->barang_id) }}"
-                                                class="form-control @error('jumlah_aktual.' . $b->barang->barang_id)
+                                            @if ($b->barang->tipe == 'select')
+                                                <select
+                                                    class="form-select @error('jumlah_aktual.' . $b->barang->barang_id)
+                                            is-invalid
+                                            @enderror"
+                                                    name="jumlah_aktual[{{ $b->barang->barang_id }}]">
+                                                    <option value="">--Pilih--</option>
+                                                    <option @if (old('jumlah_aktual.' . $b->barang->barang_id) == 'sedikit') selected @endif
+                                                        value="sedikit">
+                                                        Sedikit</option>
+                                                    <option @if (old('jumlah_aktual.' . $b->barang->barang_id) == 'hampir habis') selected @endif
+                                                        value="hampir habis">Hampir Habis</option>
+                                                    <option @if (old('jumlah_aktual.' . $b->barang->barang_id) == 'habis') selected @endif
+                                                        value="habis">
+                                                        Sedikit</option>
+                                                </select>
+                                                @error('jumlah_aktual.' . $b->barang->barang_id)
+                                                    <small class="text-danger"> {{ $message }}</small>
+                                                @enderror
+                                            @endif
+                                            @if ($b->barang->tipe == 'number')
+                                                <input type="number" name="jumlah_aktual[{{ $b->barang->barang_id }}]"
+                                                    value="{{ old('jumlah_aktual.' . $b->barang->barang_id) }}"
+                                                    class="form-control @error('jumlah_aktual.' . $b->barang->barang_id)
                                                 is-invalid
                                             @enderror">
 
-                                            @error('jumlah_aktual.' . $b->barang->barang_id)
-                                                <small class="text-danger"> {{ $message }}</small>
-                                            @enderror
+                                                @error('jumlah_aktual.' . $b->barang->barang_id)
+                                                    <small class="text-danger"> {{ $message }}</small>
+                                                @enderror
+                                            @endif
                                         </td>
                                         <td>
                                             <input type="date" name="tanggal_kadaluarsa[{{ $b->barang->barang_id }}]"
