@@ -115,8 +115,13 @@ class KondisiController extends Controller
     public function destroy(string $id)
     {
         //
-        $kondisi = Kondisi::find($id);
-        $kondisi->delete();
-        return redirect()->route('kondisi.index')->withStatus('Barang berhasil dihapus.');
+        try {
+            $barang = Kondisi::findOrFail($id); // Gunakan findOrFail agar data wajib ditemukan
+            $barang->delete();
+            return redirect()->route('kondisi.index')->withStatus('Kondisi berhasil dihapus.');
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Tangkap error jika ada foreign key constraint
+            return redirect()->route('kondisi.index')->withError('Kondisi tidak dapat dihapus karena sedang digunakan di tabel lain.');
+        }
     }
 }

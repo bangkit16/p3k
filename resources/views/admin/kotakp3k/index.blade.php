@@ -94,7 +94,7 @@
                                                         delete-button"
                                                         data-bs-toggle="modal" data-bs-target="#deleteModal"
                                                         data-id="{{ $key }}"
-                                                        data-url="{{ url('pemakaian/' . $key) }}">Delete</a>
+                                                        data-url="{{ url('kotak/' . $b->kotakP3k->kotak_p3k_id) }}">Delete</a>
                                                 </div>
                                             </div>
                                         </td>
@@ -398,16 +398,16 @@
 
 
     <!-- Modal Delete role -->
-    {{-- <div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    <div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Delete Barang</h5>
+                    <h5 class="modal-title" id="staticBackdropLabel">Delete Kotak</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Apakah kamu yakin menghapus data kondisi?
+                    Apakah kamu yakin menghapus data kotak PK3?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -419,7 +419,7 @@
                 </div>
             </div>
         </div>
-    </div> --}}
+    </div>
 @endsection
 
 @stack('js')
@@ -623,36 +623,64 @@
             const errorsBarang = @json($errors->get('edit_barang_id.*'));
             const errorsJumlah = @json($errors->get('edit_jumlah.*'));
 
+            // Barang data untuk tipe dan id
+            const barangData =
+            @json($barang); // Pastikan controller mengirimkan data barang termasuk tipe
+
             editBarangIds.forEach((barangId, index) => {
                 const jumlah = editJumlahs[index] || '';
                 const errorBarang = errorsBarang[`edit_barang_id.${index}`] || '';
                 const errorJumlah = errorsJumlah[`edit_jumlah.${index}`] || '';
 
+                // Cari tipe barang berdasarkan ID
+                const selectedBarang = barangData.find(b => b.barang_id == barangId);
+                const barangTipe = selectedBarang ? selectedBarang.tipe :
+                'number'; // Default ke 'number' jika tidak ditemukan
+
+                // Fungsi untuk menghasilkan jumlah (dropdown atau number)
+                const generateJumlahField = (tipe, selectedValue, errorJumlah) => {
+                    if (tipe === 'select') {
+                        return `
+                    <select name="edit_jumlah[]" id="edit_jumlah_${index}" class="form-select ${errorJumlah ? 'is-invalid' : ''}">
+                        <option value="">--Pilih Kondisi--</option>
+                        <option value="Sedikit" ${selectedValue === 'Sedikit' ? 'selected' : ''}>Sedikit</option>
+                        <option value="Hampir Habis" ${selectedValue === 'Hampir Habis' ? 'selected' : ''}>Hampir Habis</option>
+                        <option value="Habis" ${selectedValue === 'Habis' ? 'selected' : ''}>Habis</option>
+                    </select>
+                    ${errorJumlah ? `<div class="invalid-feedback">${errorJumlah[0]}</div>` : ''}
+                `;
+                    } else {
+                        return `
+                    <input type="number" name="edit_jumlah[]" id="edit_jumlah_${index}" class="form-control ${errorJumlah ? 'is-invalid' : ''}" value="${selectedValue}" placeholder="Masukkan jumlah">
+                    ${errorJumlah ? `<div class="invalid-feedback">${errorJumlah[0]}</div>` : ''}
+                `;
+                    }
+                };
+
                 // Tambahkan field barang dan jumlah ke dalam modal
                 $('#barang_edit_container').append(`
-                <div class="form-group row mt-2 align-items-center" id="barang_group_${index}">
-                    <div class="col-md-5">
-                        <label class="col-form-label">Jenis Barang</label>
-                        <select name="edit_barang_id[]" id="edit_barang_id_${index}" class="form-select ${errorBarang ? 'is-invalid' : ''}">
-                            <option value="">--Pilih--</option>
-                            @foreach ($barang as $b)
-                                <option value="{{ $b->barang_id }}" ${barangId == {{ $b->barang_id }} ? 'selected' : ''}>
-                                    {{ $b->barang_nama }}
-                                </option>
-                            @endforeach
-                        </select>
-                        ${errorBarang ? `<div class="invalid-feedback">${errorBarang[0]}</div>` : ''}
-                    </div>
-                    <div class="col-md-4">
-                        <label class="col-form-label">Jumlah</label>
-                        <input type="number" name="edit_jumlah[]" id="edit_jumlah_${index}" class="form-control ${errorJumlah ? 'is-invalid' : ''}" value="${jumlah}" placeholder="Masukkan jumlah">
-                        ${errorJumlah ? `<div class="invalid-feedback">${errorJumlah[0]}</div>` : ''}
-                    </div>
-                    <div class="col-md-3 text-center">
-                        <button type="button" class="btn btn-danger mt-4 remove-field" data-index="${index}">Hapus</button>
-                    </div>
+            <div class="form-group row mt-2 align-items-center" id="barang_group_${index}">
+                <div class="col-md-5">
+                    <label class="col-form-label">Jenis Barang</label>
+                    <select name="edit_barang_id[]" id="edit_barang_id_${index}" class="form-select ${errorBarang ? 'is-invalid' : ''}" data-index="${index}">
+                        <option value="">--Pilih--</option>
+                        @foreach ($barang as $b)
+                            <option value="{{ $b->barang_id }}" data-tipe="{{ $b->tipe }}" ${barangId == {{ $b->barang_id }} ? 'selected' : ''}>
+                                {{ $b->barang_nama }}
+                            </option>
+                        @endforeach
+                    </select>
+                    ${errorBarang ? `<div class="invalid-feedback">${errorBarang[0]}</div>` : ''}
                 </div>
-            `);
+                <div class="col-md-4" id="jumlah_container_${index}">
+                    <label class="col-form-label">Jumlah</label>
+                    ${generateJumlahField(barangTipe, jumlah, errorJumlah)}
+                </div>
+                <div class="col-md-3 text-center">
+                    <button type="button" class="btn btn-danger mt-4 remove-field" data-index="${index}">Hapus</button>
+                </div>
+            </div>
+        `);
             });
 
             // Fungsi hapus field barang
@@ -661,28 +689,40 @@
                 $(`#barang_group_${index}`).remove();
             });
 
-            console.log(@json($errors->all())); // Debugging
-        }
+            // Validasi barang tidak boleh sama
+            $('#editkondisiForm').on('submit', function(e) {
+                const barangIds = [];
+                let hasDuplicate = false;
 
-        // Validasi barang tidak boleh sama
-        $('#editkondisiForm').on('submit', function(e) {
-            const barangIds = [];
-            let hasDuplicate = false;
+                $('select[name="edit_barang_id[]"]').each(function() {
+                    const val = $(this).val();
+                    if (barangIds.includes(val)) {
+                        hasDuplicate = true;
+                    } else {
+                        barangIds.push(val);
+                    }
+                });
 
-            $('select[name="edit_barang_id[]"]').each(function() {
-                const val = $(this).val();
-                if (barangIds.includes(val)) {
-                    hasDuplicate = true;
-                } else {
-                    barangIds.push(val);
+                if (hasDuplicate) {
+                    alert('Barang tidak boleh duplikat.');
+                    e.preventDefault();
                 }
             });
 
-            if (hasDuplicate) {
-                alert('Barang tidak boleh duplikat.');
-                e.preventDefault();
-            }
-        });
+            // Update jumlah field berdasarkan tipe barang saat dropdown berubah
+            $('#barang_edit_container').on('change', 'select[name="edit_barang_id[]"]', function() {
+                const index = $(this).data('index');
+                const selectedOption = $(this).find(':selected');
+                const tipe = selectedOption.data('tipe') || 'number';
+                const jumlahContainer = $(`#jumlah_container_${index}`);
+                const currentValue = $(`#edit_jumlah_${index}`).val();
+
+                jumlahContainer.html(generateJumlahField(tipe, currentValue));
+            });
+
+            console.log(@json($errors->all())); // Debugging
+        }
+
     });
 
 
@@ -746,6 +786,85 @@
     //         return options;
     //     }
     // });
+    // document.addEventListener('DOMContentLoaded', function() {
+    //     var editButtons = document.querySelectorAll('.edit-button');
+    //     var barangContainer = document.getElementById('barang_edit_container');
+
+    //     editButtons.forEach(function(button) {
+    //         button.addEventListener('click', function() {
+    //             var kotakId = this.getAttribute('data-id');
+    //             var kotakLokasi = this.getAttribute('data-kotak-lokasi');
+    //             var kotakpecah = this.getAttribute('data-pecah');
+    //             var actionUrl = this.getAttribute('data-url');
+
+    //             // Parsing data JSON dari atribut data-pecah
+    //             var pecah = JSON.parse(kotakpecah);
+
+    //             // Set nilai pada input lokasi
+    //             document.getElementById('edit_lokasi').value = kotakLokasi;
+
+    //             // Set action pada form
+    //             document.getElementById('editkondisiForm').action = actionUrl;
+
+    //             // Kosongkan container sebelum menambahkan elemen baru
+    //             barangContainer.innerHTML = '';
+
+    //             // Loop untuk menambahkan elemen barang berdasarkan data JSON
+    //             pecah.forEach((item, index) => {
+    //                 tambahFieldBarang(index, item.barang_id, item.jumlah);
+    //             });
+    //         });
+    //     });
+
+    //     // Fungsi untuk menambahkan field barang
+    //     function tambahFieldBarang(index, barangId = '', jumlah = '') {
+    //         var groupDiv = document.createElement('div');
+    //         groupDiv.className = 'form-group row mt-2 align-items-center';
+    //         groupDiv.id = `barang_group_${index}`;
+
+    //         groupDiv.innerHTML = `
+    //         <div class="col-md-5">
+    //             <select name="edit_barang_id[]" id="barang_id_${index}" class="form-select">
+    //                 <option value="">--Pilih--</option>
+    //                 ${generateBarangOptions(barangId)}
+    //             </select>
+    //         </div>
+    //         <div class="col-md-3">
+    //             <input type="number" name="edit_jumlah[]" id="jumlah_${index}" class="form-control" value="${jumlah}" placeholder="Jumlah">
+    //         </div>
+    //         <div class="col-md-2">
+    //             <button type="button" class="btn btn-danger btn-sm" onclick="hapusField('${index}')">Hapus</button>
+    //         </div>
+    //     `;
+    //         barangContainer.appendChild(groupDiv);
+    //     }
+
+    //     // Fungsi untuk menghapus field barang
+    //     window.hapusField = function(index) {
+    //         var fieldGroup = document.getElementById(`barang_group_${index}`);
+    //         if (fieldGroup) {
+    //             barangContainer.removeChild(fieldGroup);
+    //         }
+    //     };
+
+    //     // Tombol Tambah Barang
+    //     document.getElementById('tambah_barang').addEventListener('click', function() {
+    //         var newIndex = barangContainer.children.length;
+    //         tambahFieldBarang(newIndex);
+    //     });
+
+    //     // Fungsi untuk membuat opsi dropdown barang
+    //     function generateBarangOptions(selectedId) {
+    //         let barang = @json($barang); // Pastikan data barang dikirim dari controller
+    //         let options = '';
+    //         barang.forEach((b) => {
+    //             options +=
+    //                 `<option value="${b.barang_id}" ${b.barang_id == selectedId ? 'selected' : ''}>${b.barang_nama}</option>`;
+    //         });
+    //         return options;
+    //     }
+    // });
+
     document.addEventListener('DOMContentLoaded', function() {
         var editButtons = document.querySelectorAll('.edit-button');
         var barangContainer = document.getElementById('barang_edit_container');
@@ -760,6 +879,8 @@
                 // Parsing data JSON dari atribut data-pecah
                 var pecah = JSON.parse(kotakpecah);
 
+                console.log(pecah)
+
                 // Set nilai pada input lokasi
                 document.getElementById('edit_lokasi').value = kotakLokasi;
 
@@ -771,26 +892,27 @@
 
                 // Loop untuk menambahkan elemen barang berdasarkan data JSON
                 pecah.forEach((item, index) => {
-                    tambahFieldBarang(index, item.barang_id, item.jumlah);
+                    tambahFieldBarang(index, item.barang_id, item.jumlah, item.barang
+                        .tipe);
                 });
             });
         });
 
         // Fungsi untuk menambahkan field barang
-        function tambahFieldBarang(index, barangId = '', jumlah = '') {
+        function tambahFieldBarang(index, barangId = '', jumlah = '', tipe = 'number') {
             var groupDiv = document.createElement('div');
             groupDiv.className = 'form-group row mt-2 align-items-center';
             groupDiv.id = `barang_group_${index}`;
 
             groupDiv.innerHTML = `
             <div class="col-md-5">
-                <select name="edit_barang_id[]" id="barang_id_${index}" class="form-select">
+                <select name="edit_barang_id[]" id="barang_id_${index}" class="form-select" onchange="updateFieldType(${index})">
                     <option value="">--Pilih--</option>
                     ${generateBarangOptions(barangId)}
                 </select>
             </div>
-            <div class="col-md-3">
-                <input type="number" name="edit_jumlah[]" id="jumlah_${index}" class="form-control" value="${jumlah}" placeholder="Jumlah">
+            <div class="col-md-3" id="jumlah_container_${index}">
+                ${generateJumlahField(tipe, jumlah, index)}
             </div>
             <div class="col-md-2">
                 <button type="button" class="btn btn-danger btn-sm" onclick="hapusField('${index}')">Hapus</button>
@@ -819,10 +941,41 @@
             let options = '';
             barang.forEach((b) => {
                 options +=
-                    `<option value="${b.barang_id}" ${b.barang_id == selectedId ? 'selected' : ''}>${b.barang_nama}</option>`;
+                    `<option value="${b.barang_id}" data-tipe="${b.tipe}" ${b.barang_id == selectedId ? 'selected' : ''}>${b.barang_nama}</option>`;
             });
             return options;
         }
+
+        // Fungsi untuk membuat field jumlah
+        // Fungsi untuk membuat field jumlah dengan opsi yang terpilih berdasarkan nilai
+        function generateJumlahField(tipe, selectedValue, index) {
+            if (tipe === 'select') {
+                return `
+            <select name="edit_jumlah[]" id="jumlah_${index}" class="form-select">
+                <option value="">--Pilih--</option>
+                <option value="Sedikit" ${selectedValue === 'sedikit' ? 'selected' : ''}>Sedikit</option>
+                <option value="Hampir Habis" ${selectedValue === 'hampir habis' ? 'selected' : ''}>Hampir Habis</option>
+                <option value="Habis" ${selectedValue === 'habis' ? 'selected' : ''}>Habis</option>
+            </select>
+        `;
+            } else {
+                return `
+            <input type="number" name="edit_jumlah[]" id="jumlah_${index}" class="form-control" value="${selectedValue}" placeholder="Jumlah">
+        `;
+            }
+        }
+
+
+        // Fungsi untuk memperbarui tipe field jumlah berdasarkan barang yang dipilih
+        window.updateFieldType = function(index) {
+            var barangSelect = document.getElementById(`barang_id_${index}`);
+            var tipe = barangSelect.options[barangSelect.selectedIndex].getAttribute('data-tipe');
+            var jumlahInput = document.getElementById(`jumlah_${index}`);
+            var selectedValue = jumlahInput ? jumlahInput.value : ''; // Ambil nilai yang sudah ada
+            var jumlahContainer = document.getElementById(`jumlah_container_${index}`);
+            jumlahContainer.innerHTML = generateJumlahField(tipe, selectedValue, index);
+        };
+
     });
 
 

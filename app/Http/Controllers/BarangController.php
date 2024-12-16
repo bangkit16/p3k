@@ -135,8 +135,13 @@ class BarangController extends Controller
     public function destroy(string $id)
     {
         
-        $barang = Barang::find($id);
-        $barang->delete();
-        return redirect()->route('barang.index')->withStatus('Barang berhasil dihapus.');
+        try {
+            $barang = Barang::findOrFail($id); // Gunakan findOrFail agar data wajib ditemukan
+            $barang->delete();
+            return redirect()->route('barang.index')->withStatus('Barang berhasil dihapus.');
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Tangkap error jika ada foreign key constraint
+            return redirect()->route('barang.index')->withError('Barang tidak dapat dihapus karena sedang digunakan di tabel lain.');
+        }
     }
 }

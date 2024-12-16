@@ -110,7 +110,7 @@ class KotakController extends Controller
             'edit_barang_id' => 'required|array|min:1',
             'edit_barang_id.*' => 'required|exists:barang,barang_id', // Validasi bahwa ID barang ada di tabel barang
             'edit_jumlah' => 'required|array|min:1',
-            'edit_jumlah.*' => 'required|integer|min:1', // Validasi bahwa edit_jumlah harus angka minimal 1
+            'edit_jumlah.*' => 'required|min:1', // Validasi bahwa edit_jumlah harus angka minimal 1
         ], [
             'edit_lokasi.required' => 'Lokasi kotak harus diisi.',
             'edit_barang_id.required' => 'Minimal 1 barang harus dipilih.',
@@ -158,5 +158,13 @@ class KotakController extends Controller
     public function destroy(string $id)
     {
         //
+        try {
+            $kotak = KotakP3K::findOrFail($id); // Gunakan findOrFail agar data wajib ditemukan
+            $kotak->delete();
+            return redirect()->route('kotak.index')->withStatus('Kotak P3K berhasil dihapus.');
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Tangkap error jika ada foreign key constraint
+            return redirect()->route('kotak.index')->withError('Kotak P3K tidak dapat dihapus karena sedang digunakan di tabel lain.');
+        }
     }
 }

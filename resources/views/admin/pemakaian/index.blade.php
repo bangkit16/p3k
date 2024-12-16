@@ -135,11 +135,11 @@
                                                         detail-button"
                                                         data-id="{{ $d->pemakaian_id }}"
                                                         href="{{ route('pemakaian.show', $d->checklist_id) }}">Detail</a> --}}
-                                                    <a class="dropdown-item
+                                                    {{-- <a class="dropdown-item
                                                         delete-button"
                                                         data-bs-toggle="modal" data-bs-target="#deleteModal"
                                                         data-id="{{ $d->pemakaian_id }}"
-                                                        data-url="{{ url('pemakaian/' . $d->checklist_id) }}">Delete</a>
+                                                        data-url="{{ url('pemakaian/' . $d->checklist_id) }}">Delete</a> --}}
                                                 </div>
                                             </div>
                                         </td>
