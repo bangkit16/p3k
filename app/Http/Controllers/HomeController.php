@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Charts\BarangTerpakai;
+
 class HomeController extends Controller
 {
     /**
@@ -19,8 +21,8 @@ class HomeController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function index( BarangTerpakai $chart)
     {
-        return view('admin.dashboard');
+        return view('admin.dashboard' , ['chart' => $chart->build()]);
     }
 }
