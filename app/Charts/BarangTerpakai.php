@@ -17,7 +17,7 @@ class BarangTerpakai
 
 
 
-public function build(): \ArielMejiaDev\LarapexCharts\BarChart
+public function build()
 {
     // Ambil data P3K beserta barang dan kotakP3K
     $data = P3K::with(['barang', 'kotakP3k'])
