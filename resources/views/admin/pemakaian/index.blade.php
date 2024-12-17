@@ -102,7 +102,7 @@
                                     <th scope="col">
                                         Kotak P3K
                                     </th>
-                                    <th scope="col"></th>
+                                    {{-- <th scope="col"></th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -120,7 +120,7 @@
                                         <td class="text-center">{{ $d->jumlah_pemakaian }}</td>
                                         <td>{{ $d->alasan_pemakaian }}</td>
                                         <td>{{ $d->kotakP3k->lokasi }}</td>
-                                        <td class="text-right">
+                                        {{-- <td class="text-right">
                                             <div class="dropdown">
                                                 <a class="btn btn-sm btn-icon-only text-light" href="#" role="button"
                                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -140,9 +140,9 @@
                                                         data-bs-toggle="modal" data-bs-target="#deleteModal"
                                                         data-id="{{ $d->pemakaian_id }}"
                                                         data-url="{{ url('pemakaian/' . $d->checklist_id) }}">Delete</a> --}}
-                                                </div>
+                                                {{-- </div>
                                             </div>
-                                        </td>
+                                        </td> --}}
                                     </tr>
                                 @empty
                                     <tr>

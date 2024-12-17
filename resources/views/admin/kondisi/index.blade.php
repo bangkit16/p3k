@@ -133,7 +133,7 @@
                             <label for="kondisi_nama" class="col-form-label">Nama Kondisi: </label>
                             <input type="text" name="kondisi_nama" id="kondisi_nama"
                                 class="form-control{{ $errors->has('kondisi_nama') ? ' is-invalid' : '' }}"
-                                placeholder="Nama Barang" value="{{ old('kondisi_nama') }}">
+                                placeholder="Nama Kondisi" value="{{ old('kondisi_nama') }}">
                             @if ($errors->has('kondisi_nama'))
                                 <span class="invalid-feedback" role="alert">
                                     {{ $errors->first('kondisi_nama') }}
@@ -155,7 +155,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editbarangTitle">Edit Barang</h5>
+                    <h5 class="modal-title" id="editbarangTitle">Edit Kondisi</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -166,10 +166,10 @@
 
                         <!-- Name role -->
                         <div class="form-group{{ $errors->has('edit_kondisi_nama') ? ' has-danger' : '' }}">
-                            <label for="edit-kondisi-nama" class="col-form-label">Name Barang: </label>
+                            <label for="edit-kondisi-nama" class="col-form-label">Name Kondisi: </label>
                             <input type="text" name="edit_kondisi_nama" id="edit-kondisi-nama"
                                 class="form-control{{ $errors->has('edit_kondisi_nama') ? ' is-invalid' : '' }}"
-                                placeholder="Name Barang" value="{{ old('edit_kondisi_nama') }}">
+                                placeholder="Name Kondisi" value="{{ old('edit_kondisi_nama') }}">
                             @if ($errors->has('edit_kondisi_nama'))
                                 <span class="invalid-feedback" role="alert">
                                     {{ $errors->first('edit_kondisi_nama') }}
@@ -179,7 +179,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="text-white btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="text-white btn btn-primary">Update Barang</button>
+                    <button type="submit" class="text-white btn btn-primary">Update Kondisi</button>
                 </div>
                 </form>
             </div>
@@ -192,7 +192,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Delete Barang</h5>
+                    <h5 class="modal-title" id="staticBackdropLabel">Delete Kondisi</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
