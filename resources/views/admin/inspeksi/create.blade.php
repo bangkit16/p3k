@@ -177,21 +177,6 @@
                             </table>
                         @endif
                     </div>
-                    {{-- <ul class="nav flex-column  p-3">
-                <span class="fw-bolder">List Kriteria</span>
-                <li class="nav-item pt-2">
-                    <a class="nav-link text-body" data-scroll href="#dokumentasi">
-                        <span class="text-sm">{{ 'Dokumentasi' }}</span>
-                    </a>
-                </li>
-                @foreach ($data as $uraian)
-                    <li class="nav-item pt-2">
-                        <a class="nav-link text-body" data-scroll href="#{{ $uraian['uraian'] }}">
-                            <span class="text-sm">{{ $uraian['uraian'] }}</span>
-                        </a>
-                    </li>
-                @endforeach
-            </ul> --}}
                 </div>
             </div>
         </div>
@@ -199,100 +184,6 @@
     </form>
 
     </div>
-    <!-- Modal Add role-->
-    {{-- <div class="modal fade" id="addkondisi" tabindex="-1" aria-labelledby="addbarangTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Add Kondisi</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form role="form" method="POST" action="{{ route('kondisi.store') }}"
-                        enctype="multipart/form-data">
-                        @csrf
-
-                        <!-- Name role -->
-                        <div class="form-group{{ $errors->has('kondisi_nama') ? ' has-danger' : '' }}">
-                            <label for="kondisi_nama" class="col-form-label">Nama Kondisi: </label>
-                            <input type="text" name="kondisi_nama" id="kondisi_nama"
-                                class="form-control{{ $errors->has('kondisi_nama') ? ' is-invalid' : '' }}"
-                                placeholder="Nama Barang" value="{{ old('kondisi_nama') }}">
-                            @if ($errors->has('kondisi_nama'))
-                                <span class="invalid-feedback" role="alert">
-                                    {{ $errors->first('kondisi_nama') }}
-                                </span>
-                            @endif
-                        </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Tambah Kondisi</button>
-                </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Edit role -->
-    <div class="modal fade" id="editkondisi" tabindex="-1" aria-labelledby="editbarangTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editbarangTitle">Edit Barang</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form role="form" method="POST" action="" id="editkondisiForm"
-                        enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-
-                        <!-- Name role -->
-                        <div class="form-group{{ $errors->has('edit_kondisi_nama') ? ' has-danger' : '' }}">
-                            <label for="edit-kondisi-nama" class="col-form-label">Name Barang: </label>
-                            <input type="text" name="edit_kondisi_nama" id="edit-kondisi-nama"
-                                class="form-control{{ $errors->has('edit_kondisi_nama') ? ' is-invalid' : '' }}"
-                                placeholder="Name Barang" value="{{ old('edit_kondisi_nama') }}">
-                            @if ($errors->has('edit_kondisi_nama'))
-                                <span class="invalid-feedback" role="alert">
-                                    {{ $errors->first('edit_kondisi_nama') }}
-                                </span>
-                            @endif
-                        </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="text-white btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="text-white btn btn-primary">Update Barang</button>
-                </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Delete role -->
-    <div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Delete Barang</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Apakah kamu yakin menghapus data kondisi?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <form id="deleteKondisiForm" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-primary">Delete</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div> --}}
 @endsection
 
 @stack('js')

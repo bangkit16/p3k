@@ -5,7 +5,7 @@
         <div class="col-lg-8">
             <div class="card">
                 <div class="card-body">
-                    {{  $chart->container() }}
+                    {{ $chart->container() }}
                 </div>
             </div>
         </div>
@@ -13,13 +13,13 @@
 @endsection
 
 @push('js')
+    {{ $chart->script() }}
     <script src="{{ $chart->cdn() }}"></script>
 
-    {{ $chart->script() }}
     {{-- <script src="{{ asset('white') }}/js/plugins/chartjs.min.js"></script> --}}
-    <script>
+    {{-- <script>
         $(document).ready(function() {
             demo.initDashboardPageCharts();
         });
-    </script>
+    </script> --}}
 @endpush

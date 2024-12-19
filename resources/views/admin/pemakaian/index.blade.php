@@ -3,16 +3,16 @@
 @section('content')
     <div class="row">
         <div class="col-md-12">
-            <div class="card ">
+            <div class="card">
                 <div class="card-header">
                     <div class="row">
                         <div class="col-8">
-                            <h4 class="card-title">Riwayat Pemakaian</h4>
+                            <h4 class="card-title text-wrap">Riwayat Pemakaian</h4>
                         </div>
-                        <div class="col-4 text-right">
-                            <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
+                        <div class="col-4">
+                            <button type="button" class="btn btn-primary mb-3 w-100 w-sm-auto" data-bs-toggle="modal"
                                 data-bs-target="#addpemakaian">
-                                Add Pemakaian
+                                <div class="text-wrap">Add Pemakaian</div>
                             </button>
                         </div>
                     </div>
@@ -20,13 +20,12 @@
                 <div class="card-body">
                     @include('admin.alerts.success')
                     @include('admin.alerts.alert')
-                    @if ( auth()->user()->role_id == 1 || auth()->user()->role_id == 2)
-                        
-                    <div class="container-fluid">
-                        <a class="btn btn-success mb-3" href="{{ route('laporan.pemakaian.pdf') }}">Cetak PDF</a>
-                        <a class="btn btn-success mb-3" href="{{ route('laporan.pemakaian.excel') }}">Cetak Excel</a>
-                        <a class="btn btn-success mb-3" href="{{ route('laporan.pemakaian.print') }}">Print</a>
-                    </div>
+                    @if (auth()->user()->role_id == 1 || auth()->user()->role_id == 2)
+                        <div class="container-fluid">
+                            <a class="btn btn-success mb-3" href="{{ route('laporan.pemakaian.pdf') }}">Cetak PDF</a>
+                            <a class="btn btn-success mb-3" href="{{ route('laporan.pemakaian.excel') }}">Cetak Excel</a>
+                            <a class="btn btn-success mb-3" href="{{ route('laporan.pemakaian.print') }}">Print</a>
+                        </div>
                     @endif
                     <div class="container-fluid">
                         <form method="GET" action="{{ route('pemakaian.index') }}" class="d-flex w-100">
@@ -43,11 +42,9 @@
 
                     <div class="container-fluid">
                         <table class="table table-responsive-xl table-bordered" id="">
-                            <thead class="text-primary ">
+                            <thead class="text-primary">
                                 <tr>
-                                    <th class="text-center" scope="col">
-                                        No
-                                    </th>
+                                    <th class="text-center" scope="col">No</th>
                                     <th scope="col">
                                         <span style="cursor: pointer;"
                                             onclick="window.location.href='{{ request()->fullUrlWithQuery(['sort_by' => 'nama_pemakai', 'order' => $order === 'asc' ? 'desc' : 'asc']) }}'">
@@ -84,9 +81,7 @@
                                             @endif
                                         </span>
                                     </th>
-                                    <th scope="col">
-                                        Jenis Obat P3K
-                                    </th>
+                                    <th scope="col">Jenis Obat P3K</th>
                                     <th scope="col">
                                         <span style="cursor: pointer;"
                                             onclick="window.location.href='{{ request()->fullUrlWithQuery(['sort_by' => 'jumlah_pemakaian', 'order' => $order === 'asc' ? 'desc' : 'asc']) }}'">
@@ -96,13 +91,8 @@
                                             @endif
                                         </span>
                                     </th>
-                                    <th scope="col">
-                                        Alasan Pemakaian
-                                    </th>
-                                    <th scope="col">
-                                        Kotak P3K
-                                    </th>
-                                    {{-- <th scope="col"></th> --}}
+                                    <th scope="col">Alasan Pemakaian</th>
+                                    <th scope="col">Kotak P3K</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -120,41 +110,17 @@
                                         <td class="text-center">{{ $d->jumlah_pemakaian }}</td>
                                         <td>{{ $d->alasan_pemakaian }}</td>
                                         <td>{{ $d->kotakP3k->lokasi }}</td>
-                                        {{-- <td class="text-right">
-                                            <div class="dropdown">
-                                                <a class="btn btn-sm btn-icon-only text-light" href="#" role="button"
-                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fas fa-ellipsis-v"></i>
-                                                </a>
-                                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                                    <a class="dropdown-item edit-button" data-bs-toggle="modal"
-                                                        data-bs-target="#editpemakaian" data-id="{{ $d->kondisi_id }}"
-                                                        data-kondisi-nama="{{ $d->nama_pemakai }}"
-                                                        data-url="{{ url('kondisi/' . $d->kondisi_id) }}">Edit</a>
-                                                    {{-- <a class="dropdown-item
-                                                        detail-button"
-                                                        data-id="{{ $d->pemakaian_id }}"
-                                                        href="{{ route('pemakaian.show', $d->checklist_id) }}">Detail</a> --}}
-                                                    {{-- <a class="dropdown-item
-                                                        delete-button"
-                                                        data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                                        data-id="{{ $d->pemakaian_id }}"
-                                                        data-url="{{ url('pemakaian/' . $d->checklist_id) }}">Delete</a> --}}
-                                                {{-- </div>
-                                            </div>
-                                        </td> --}}
                                     </tr>
                                 @empty
                                     <tr>
                                         <td colspan="4" class="text-center">Tidak ada Kondisi yang ditemukan</td>
                                     </tr>
                                 @endforelse
-
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <div class="card-footer ">
+                <div class="card-footer">
                     <nav class="d-flex justify-content-between align-items-center" aria-label="...">
                         <div class="form-group">
                             <select id="paginationLimit" class="form-control" onchange="updatePaginationLimit(this.value)"
@@ -175,6 +141,8 @@
             </div>
         </div>
     </div>
+
+
     <!-- Modal Add role-->
     <div class="modal fade" id="addpemakaian" tabindex="-1" aria-labelledby="addbarangTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -186,7 +154,7 @@
                 <div class="modal-body">
                     <form role="form" method="POST" action="{{ route('pemakaian.store') }}"
                         enctype="multipart/form-data">
-                        
+
                         @csrf
                         <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
                         <!-- Name role -->
@@ -204,8 +172,8 @@
                         <div class="form-group @error('divisi') has-danger @enderror">
                             <label for="divisi" class="col-form-label">Divisi</label>
                             <input type="text" name="divisi" id="divisi"
-                                class="form-control @error('divisi') is-invalid @enderror"
-                                placeholder="Divisi" value="{{ old('divisi') }}">
+                                class="form-control @error('divisi') is-invalid @enderror" placeholder="Divisi"
+                                value="{{ old('divisi') }}">
                             @error('divisi')
                                 <span class="invalid-feedback" role="alert">
                                     {{ $errors->first('divisi') }}
@@ -215,8 +183,8 @@
                         <div class="form-group @error('tanggal') has-danger @enderror">
                             <label for="tanggal" class="col-form-label">Tanggal </label>
                             <input type="date" name="tanggal" id="tanggal"
-                                class="form-control @error('tanggal') is-invalid @enderror"
-                                placeholder="Tanggal" value="{{ old('tanggal') }}">
+                                class="form-control @error('tanggal') is-invalid @enderror" placeholder="Tanggal"
+                                value="{{ old('tanggal') }}">
                             @error('tanggal')
                                 <span class="invalid-feedback" role="alert">
                                     {{ $errors->first('tanggal') }}
@@ -226,8 +194,8 @@
                         <div class="form-group @error('jam_pemakaian') has-danger @enderror">
                             <label for="jam_pemakaian" class="col-form-label">Jam Pemakaian </label>
                             <input type="time" name="jam_pemakaian" id="jam_pemakaian"
-                                class="form-control @error('jam_pemakaian') is-invalid @enderror"
-                                placeholder="Tanggal" value="{{ old('jam_pemakaian') }}">
+                                class="form-control @error('jam_pemakaian') is-invalid @enderror" placeholder="Tanggal"
+                                value="{{ old('jam_pemakaian') }}">
                             @error('jam_pemakaian')
                                 <span class="invalid-feedback" role="alert">
                                     {{ $errors->first('jam_pemakaian') }}
@@ -236,12 +204,13 @@
                         </div>
                         <div class="form-group @error('barang_id') has-danger @enderror">
                             <label for="barang_id" class="col-form-label">Jenis Barang </label>
-                                <select name="barang_id" id="" class="form-select  @error('barang_id') is-invalid @enderror">
-                                    <option value="">--Pilih--</option>
-                                    @foreach ($barang as $b)    
-                                        <option value="{{ $b->barang_id }}">{{ $b->barang_nama }}</option>
-                                    @endforeach
-                                </select>
+                            <select name="barang_id" id=""
+                                class="form-select  @error('barang_id') is-invalid @enderror">
+                                <option value="">--Pilih--</option>
+                                @foreach ($barang as $b)
+                                    <option value="{{ $b->barang_id }}">{{ $b->barang_nama }}</option>
+                                @endforeach
+                            </select>
                             @error('barang_id')
                                 <span class="invalid-feedback" role="alert">
                                     {{ $errors->first('barang_id') }}
@@ -272,12 +241,13 @@
                         </div>
                         <div class="form-group @error('kotak_p3k_id') has-danger @enderror">
                             <label for="kotak_p3k_id" class="col-form-label">Kotak </label>
-                                <select name="kotak_p3k_id" id="" class="form-select  @error('kotak_p3k_id') is-invalid @enderror">
-                                    <option value="">--Pilih--</option>
-                                    @foreach ($kotak as $k)    
-                                        <option value="{{ $k->kotak_p3k_id }}">{{ $k->lokasi }}</option>
-                                    @endforeach
-                                </select>
+                            <select name="kotak_p3k_id" id=""
+                                class="form-select  @error('kotak_p3k_id') is-invalid @enderror">
+                                <option value="">--Pilih--</option>
+                                @foreach ($kotak as $k)
+                                    <option value="{{ $k->kotak_p3k_id }}">{{ $k->lokasi }}</option>
+                                @endforeach
+                            </select>
                             @error('kotak_p3k_id')
                                 <span class="invalid-feedback" role="alert">
                                     {{ $errors->first('kotak_p3k_id') }}
@@ -364,7 +334,7 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             if (
-                {{ $errors->has('nama_pemakai') ||  $errors->has('divisi') ||  $errors->has('tanggal') ||  $errors->has('barang_id') ||  $errors->has('jumlah_pemakaian') ||  $errors->has('alasan_pemakaian') ||  $errors->has('kotak_p3k_id') || $errors->has('jam_pemakaian') ? 'true' : 'false' }}
+                {{ $errors->has('nama_pemakai') || $errors->has('divisi') || $errors->has('tanggal') || $errors->has('barang_id') || $errors->has('jumlah_pemakaian') || $errors->has('alasan_pemakaian') || $errors->has('kotak_p3k_id') || $errors->has('jam_pemakaian') ? 'true' : 'false' }}
             ) {
                 var addBarangModal = new bootstrap.Modal(document.getElementById('addpemakaian'));
                 addBarangModal.show();

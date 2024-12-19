@@ -12,7 +12,7 @@
                         <div class="col-4 text-right">
                             <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
                                 data-bs-target="#addbarang">
-                                Add Barang
+                                <div class="text-wrap">Add Barang</div>
                             </button>
                         </div>
                     </div>
@@ -152,7 +152,7 @@
                         @csrf
 
                         <!-- Name role -->
-                        <div class="form-group{{ $errors->has('uraian_nama') ? ' has-danger' : '' }}">
+                        <div class="form-group">
                             <label for="barang_nama" class="col-form-label">Name Barang: </label>
                             <input type="text" name="barang_nama" id="barang_nama"
                                 class="form-control{{ $errors->has('barang_nama') ? ' is-invalid' : '' }}"
@@ -163,7 +163,7 @@
                                 </span>
                             @endif
                         </div>
-                        <div class="form-group{{ $errors->has('jumlah_standar') ? ' has-danger' : '' }}">
+                        <div class="form-group">
                             <label for="jumlah_standar" class="col-form-label">Jumlah Standar: </label>
                             <input type="number" name="jumlah_standar" id="jumlah_standar"
                                 class="form-control{{ $errors->has('jumlah_standar') ? ' is-invalid' : '' }}"
@@ -174,7 +174,7 @@
                                 </span>
                             @endif
                         </div>
-                        <div class="form-group{{ $errors->has('tipe') ? ' has-danger' : '' }}">
+                        <div class="form-group">
                             <label for="tipe" class="col-form-label">Tipe: </label>
                             <select name="tipe" id="tipe"
                                 class="form-select{{ $errors->has('tipe') ? ' is-invalid' : '' }}" placeholder="tip">
@@ -215,7 +215,7 @@
                         @method('PUT')
 
                         <!-- Name role -->
-                        <div class="form-group{{ $errors->has('edit_barang_nama') ? ' has-danger' : '' }}">
+                        <div class="form-group">
                             <label for="edit-barang-nama" class="col-form-label">Name Barang: </label>
                             <input type="text" name="edit_barang_nama" id="edit-barang-nama"
                                 class="form-control{{ $errors->has('edit_barang_nama') ? ' is-invalid' : '' }}"
@@ -226,7 +226,7 @@
                                 </span>
                             @endif
                         </div>
-                        <div class="form-group{{ $errors->has('edit_jumlah_standar') ? ' has-danger' : '' }}">
+                        <div class="form-group">
                             <label for="edit-jumlah-standar" class="col-form-label">Jumlah Standar: </label>
                             <input type="text" name="edit_jumlah_standar" id="edit-jumlah-standar"
                                 class="form-control{{ $errors->has('edit_jumlah_standar') ? ' is-invalid' : '' }}"
@@ -237,7 +237,7 @@
                                 </span>
                             @endif
                         </div>
-                        <div class="form-group{{ $errors->has('edit_tipe') ? ' has-danger' : '' }}">
+                        <div class="form-group">
                             <label for="edit_tipe" class="col-form-label">Tipe: </label>
                             <select name="edit_tipe" id="edit_tipe"
                                 class="form-select{{ $errors->has('edit_tipe') ? ' is-invalid' : '' }}"

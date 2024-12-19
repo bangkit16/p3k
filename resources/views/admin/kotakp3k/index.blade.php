@@ -12,7 +12,7 @@
                         <div class="col-4 text-right">
                             <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
                                 data-bs-target="#addpemakaian">
-                                Add Kotak P3K
+                                <div class="text-wrap">Add Kotak P3K</div>
                             </button>
                         </div>
                     </div>
@@ -145,7 +145,7 @@
 
                         @csrf
                         <!-- Name role -->
-                        <div class="form-group @error('lokasi') has-danger @enderror">
+                        <div class="form-group">
                             <label for="lokasi" class="col-form-label">Lokasi Kotak </label>
                             <input type="text" name="lokasi" id="lokasi"
                                 class="form-control @error('lokasi') is-invalid @enderror" placeholder="Nama Pemakai"
@@ -289,7 +289,7 @@
                         @method('PUT')
 
                         <!-- Name role -->
-                        <div class="form-group @error('edit_lokasi') has-danger @enderror">
+                        <div class="form-group">
                             <label for="edit_lokasi" class="col-form-label">Lokasi Kotak </label>
                             <input type="text" name="edit_lokasi" id="edit_lokasi"
                                 class="form-control @error('edit_lokasi') is-invalid @enderror" placeholder="Nama Pemakai"

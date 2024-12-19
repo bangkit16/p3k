@@ -12,7 +12,7 @@
                         <div class="col-4 text-right">
                             <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
                                 data-bs-target="#addkondisi">
-                                Add Kondisi
+                                <div class="text-wrap">Add Kondisi</div>
                             </button>
                         </div>
                     </div>
@@ -129,7 +129,7 @@
                         @csrf
 
                         <!-- Name role -->
-                        <div class="form-group{{ $errors->has('kondisi_nama') ? ' has-danger' : '' }}">
+                        <div class="form-group">
                             <label for="kondisi_nama" class="col-form-label">Nama Kondisi: </label>
                             <input type="text" name="kondisi_nama" id="kondisi_nama"
                                 class="form-control{{ $errors->has('kondisi_nama') ? ' is-invalid' : '' }}"
@@ -165,7 +165,7 @@
                         @method('PUT')
 
                         <!-- Name role -->
-                        <div class="form-group{{ $errors->has('edit_kondisi_nama') ? ' has-danger' : '' }}">
+                        <div class="form-group">
                             <label for="edit-kondisi-nama" class="col-form-label">Name Kondisi: </label>
                             <input type="text" name="edit_kondisi_nama" id="edit-kondisi-nama"
                                 class="form-control{{ $errors->has('edit_kondisi_nama') ? ' is-invalid' : '' }}"
