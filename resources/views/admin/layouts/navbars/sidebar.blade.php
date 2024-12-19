@@ -48,7 +48,7 @@
                     <a data-toggle="collapse" href="#checklist_p3k"
                         aria-expanded="{{ in_array($pageSlug, ['input_inspeksi', 'riwayat_inspeksi']) ? 'true' : 'false' }}"
                         class="{{ in_array($pageSlug, ['input_inspeksi', 'riwayat_inspeksi']) ? '' : 'collapsed' }}">
-                        <i class="fas fa-database"></i> <!-- Ikon Data APAR -->
+                        <i class="fa-solid fa-clipboard-check"></i><!-- Ikon Data APAR -->
                         <span class="nav-link-text">{{ 'CHECKLIST P3K' }}</span>
                         <b class="caret mt-1"></b>
                     </a>
@@ -57,13 +57,13 @@
                         <ul class="nav pl-4">
                             <li @if ($pageSlug == 'input_inspeksi') class="active " @endif>
                                 <a href="{{ route('inspeksi.create') }}">
-                                    <i class="fas fa-tasks"></i> <!-- Ikon Manage Uraian -->
+                                    <i class="fa-solid fa-pen-to-square"></i> <!-- Ikon Manage Uraian -->
                                     <p>{{ 'Input Inspeksi' }}</p>
                                 </a>
                             </li>
                             <li @if ($pageSlug == 'riwayat_inspeksi') class="active " @endif>
                                 <a href="{{ route('inspeksi.index') }}">
-                                    <i class="fas fa-list-ul"></i> <!-- Ikon Manage Sub Uraian -->
+                                    <i class="fa-solid fa-clock-rotate-left"></i><!-- Ikon Manage Sub Uraian -->
                                     <p>{{ 'Riwayat Inspeksi' }}</p>
                                 </a>
                             </li>
@@ -74,7 +74,7 @@
                     <a data-toggle="collapse" href="#pemakaian_p3k"
                         aria-expanded="{{ in_array($pageSlug, ['riwayat_pemakaian']) ? 'true' : 'false' }}"
                         class="{{ in_array($pageSlug, ['riwayat_pemakaian']) ? '' : 'collapsed' }}">
-                        <i class="fas fa-database"></i> <!-- Ikon Data APAR -->
+                        <i class="fa-solid fa-box"></i> <!-- Ikon Data APAR -->
                         <span class="nav-link-text">{{ 'PEMAKAIAN P3K' }}</span>
                         <b class="caret mt-1"></b>
                     </a>
@@ -83,7 +83,7 @@
                         <ul class="nav pl-4">
                             <li @if ($pageSlug == 'riwayat_pemakaian') class="active " @endif>
                                 <a href="{{ route('pemakaian.index') }}">
-                                    <i class="fas fa-list-ul"></i> <!-- Ikon Manage Sub Uraian -->
+                                    <i class="fa-solid fa-file-lines"></i> <!-- Ikon Manage Sub Uraian -->
                                     <p>{{ 'Riwayat Pemakaian' }}</p>
                                 </a>
                             </li>
@@ -114,7 +114,7 @@
                             </li>
                             <li @if ($pageSlug == 'manage_kotak') class="active " @endif>
                                 <a href="{{ route('kotak.index') }}">
-                                    <i class="fas fa-list-ul"></i> <!-- Ikon Manage Sub Uraian -->
+                                    <i class="fa-solid fa-inbox"></i> <!-- Ikon Manage Sub Uraian -->
                                     <p>{{ 'Manage Kotak' }}</p>
                                 </a>
                             </li>
