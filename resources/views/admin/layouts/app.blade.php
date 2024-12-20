@@ -26,12 +26,15 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     @stack('styles')
     <style>
+        
+
         /* Mencegah body di-scroll */
         body.overflow-hidden {
             overflow: hidden !important;
             position: fixed;
             width: 100%;
         }
+
 
         /* Sidebar tetap di tempat */
         .sidebar.active {
@@ -47,6 +50,7 @@
         .sidebar.prevent-scroll {
             touch-action: none;
         }
+
     </style>
 
 </head>
@@ -73,7 +77,7 @@
         <div class="wrapper wrapper-full-page">
             <div class="full-page {{ $contentClass ?? '' }}">
                 <div class="content">
-                    <div class="container">
+                    <div class="container " style="overflow-y: auto">
                         @yield('content')
                     </div>
                 </div>
